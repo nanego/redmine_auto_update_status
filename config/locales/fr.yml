@@ -1,0 +1,13 @@
+fr:
+  label_auto_update_rule: "Règles de mise à jour des statuts"
+  label_auto_update_rules: "Mise à jour automatique des statuts"
+  no_auto_update_rules: "Aucune règle n'a été paramétrée pour l'instant"
+  label_new_auto_update_rule: "Ajouter une règle"
+  label_initial_status_plural: "Statuts de départ"
+  label_final_status: "Statut après changement"
+  label_auto_update_note: "Note ajoutée à la demande"
+  notice_auto_update_rule_successfully_created: "La règle a bien été ajoutée."
+  notice_auto_update_rule_successfully_updated: "La règle a bien été modifiée."
+  notice_auto_update_rule_successfully_deleted: "La règle a bien été supprimée."
+  label_edit_auto_update_rule: "Modifier une règle"
+  show_auto_update_rule_results: "Voir les demandes correspondantes à cette règle"

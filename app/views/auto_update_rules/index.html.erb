@@ -1,0 +1,62 @@
+<% html_title(l(:label_auto_update_rule)) %>
+
+<div class="contextual">
+  <%= link_to(l(:label_new_auto_update_rule),
+              {:controller => 'auto_update_rules', :action => 'new'},
+              :class => 'icon icon-add', :method => :get) %>
+</div>
+
+<h2><%= h "#{l(:label_auto_update_rule)}" %></h2>
+
+<% if @notice %>
+  <div class="flash notice"><%= @notice %></div>
+<% end %>
+
+<% if @rules.empty? %>
+  <div class="rules_box">
+    <%= l(:no_auto_update_rules) %>
+  </div>
+<% else %>
+
+  <div class="rules_box">
+
+    <table class="list rules" id="rules_list">
+      <thead>
+      <tr>
+        <th class="rule_initial_status"><%= l(:label_initial_status_plural) %></th>
+        <th class="rule_final_status"><%= l(:label_final_status) %></th>
+        <th class="rule_note"><%= l(:field_notes) %></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @rules.each do |rule| %>
+        <% initial_statuses = IssueStatus.where(id: rule.initial_status_ids).join(', ') %>
+        <% final_status = IssueStatus.where(id: rule.final_status_id).join(', ') %>
+        <tr class="rule">
+          <% link_to_edition = Proc.new do |label, title|
+            size_max = 50
+            label = "#{label.first(size_max)}..." if label.size > size_max
+            link_to label.html_safe, {:controller => 'auto_update_rules',
+                                      :action => 'edit',
+                                      :id => rule.id
+            }, {:title => title }
+          end %>
+          <td><%= link_to_edition.call h(initial_statuses), initial_statuses %></td>
+          <td><%= link_to_edition.call h(final_status), final_status %></td>
+          <td><%= link_to_edition.call h(rule.note), rule.note %></td>
+
+          <td class="buttons">
+            <%= link_to l(:button_edit), edit_auto_update_rule_path(id: rule.id), :class => 'icon icon-edit' %>
+            <%= delete_link auto_update_rule_path(rule) %>
+          </td>
+        </tr>
+        <tr class="">
+          <td colspan="4"><%= link_to l("show_auto_update_rule_results"), auto_update_rule_path(rule), :class => 'icon icon-issue' %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+<% end %>
