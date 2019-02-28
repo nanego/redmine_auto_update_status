@@ -11,7 +11,7 @@ fr:
   notice_auto_update_rule_successfully_deleted: "La règle a bien été supprimée."
   notice_auto_update_rule_successfully_applied: "La demande a bien été mise à jour"
   label_edit_auto_update_rule: "Modifier une règle"
-  show_auto_update_rule_results: "Voir les demandes correspondantes à cette règle"
+  show_auto_update_rule_results: "%{issues_count} demandes correspondent à cette règle"
   field_time_limit: "Délai d'inactivité"
   field_time_limit_in_days: "Délai d'inactivité avant changement (en jours)"
   field_parent_project: "Projet parent"
@@ -19,3 +19,4 @@ fr:
   issues_total_count: "Nombre total de demandes"
   issues_to_be_updated: "Nombre de demandes à mettre à jour"
   apply_change: "Appliquer"
+  time_in_days: "%{days} jours"

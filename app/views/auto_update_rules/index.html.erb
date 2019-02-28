@@ -36,11 +36,11 @@
         <% initial_statuses = IssueStatus.where(id: rule.initial_status_ids).join(', ') %>
         <% final_status = IssueStatus.where(id: rule.final_status_id).join(', ') %>
         <tr class="rule">
-          <td style="text-align: left;"><%= link_to l("show_auto_update_rule_results"), auto_update_rule_path(rule), :class => 'icon icon-issue' %></td>
+          <td style="text-align: left;"><%= link_to l("show_auto_update_rule_results", issues_count: rule.issues.count), auto_update_rule_path(rule), :class => 'icon icon-issue' %></td>
           <td><%= h(initial_statuses) %></td>
           <td><%= h(final_status) %></td>
           <td><%= h(rule.project) %></td>
-          <td><%= h(rule.time_limit) %></td>
+          <td><%= l 'time_in_days', days: rule.time_limit %></td>
 
           <td class="buttons">
             <%= link_to l(:button_edit), edit_auto_update_rule_path(id: rule.id), :class => 'icon icon-edit' %>
