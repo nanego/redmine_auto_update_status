@@ -1,5 +1,9 @@
 require 'redmine_auto_update_status/hooks'
 
+ActiveSupport::Reloader.to_prepare do
+  require_dependency 'redmine_auto_update_status/issue_patch'
+end
+
 Redmine::Plugin.register :redmine_auto_update_status do
   name 'Redmine Auto Update Status plugin'
   author 'Vincent ROBERT'

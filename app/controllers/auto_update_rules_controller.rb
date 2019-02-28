@@ -9,6 +9,15 @@ class AutoUpdateRulesController < ApplicationController
 
   def show
     @rule = AutoUpdateRule.find(params[:id])
+    @final_status = IssueStatus.find_by_id(@rule.final_status_id)
+
+    @issues_total_count = Issue.count
+    @issues_to_change = @rule.issues
+    @issues_to_change_count = @issues_to_change.count
+    @issues_to_change_pages = Paginator.new @issues_to_change_count, per_page_option, params[:page]
+    @issues_to_change_paginated = @issues_to_change.includes(:project, :tracker, :priority, :status)
+                                      .limit(@issues_to_change_pages.per_page)
+                                      .offset(@issues_to_change_pages.offset)
   end
 
   def new
@@ -60,6 +69,25 @@ class AutoUpdateRulesController < ApplicationController
     respond_to do |format|
       format.html {
         flash[:notice] = l(:notice_auto_update_rule_successfully_deleted)
+        redirect_to(:back)
+      }
+    end
+  end
+
+  def apply
+    @rule = AutoUpdateRule.find(params[:id])
+    if params[:issue_id]
+      @issue = Issue.find(params[:issue_id])
+      if @rule.issues.include?(@issue)
+        @issue.change_status(note: @rule.note, user: User.current, new_status_id: @rule.final_status_id)
+      end
+    else
+      # TODO Mass-update
+    end
+
+    respond_to do |format|
+      format.html {
+        flash[:notice] = l(:notice_auto_update_rule_successfully_applied)
         redirect_to(:back)
       }
     end

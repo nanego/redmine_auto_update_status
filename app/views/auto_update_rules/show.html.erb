@@ -1,1 +1,38 @@
-<%= @rule.inspect %>
+<div class=contextual>
+  <%= link_to l(:label_auto_update_rule), auto_update_rules_path %>
+</div>
+
+<h2><%= l :label_auto_update_rules %></h2>
+
+<p>
+  <%= l 'issues_total_count' %>: <%= @issues_total_count %>
+  <br>
+  <%= l 'issues_to_be_updated' %>: <%= @issues_to_change_count %>
+</p>
+
+<table class="list">
+  <thead>
+  <tr>
+    <th><%= l 'field_project' %></th>
+    <th><%= l 'field_created_on' %></th>
+    <th><%= l 'field_subject' %></th>
+    <th><%= l 'field_status' %></th>
+    <th><%= l 'field_final_status' %></th>
+    <th><%= l 'action' %></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @issues_to_change_paginated.each do |issue| %>
+    <tr>
+      <td><%= link_to_project(issue.project) %></td>
+      <td><%= format_date(issue.created_on) %></td>
+      <td><%= link_to_issue issue %></td>
+      <td><%= issue.status %></td>
+      <td><%= @final_status %></td>
+      <td><%= link_to l('apply_change'), apply_auto_update_rule_path(id: @rule.id, issue_id: issue.id), method: :post %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<span class="pagination"><%= pagination_links_full @issues_to_change_pages, @issues_to_change_count %></span>
+
