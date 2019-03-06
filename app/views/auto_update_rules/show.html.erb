@@ -1,14 +1,52 @@
 <div class=contextual>
-  <%= link_to l(:label_auto_update_rule), auto_update_rules_path %>
+  <%= link_to l(:label_all_auto_update_rules), auto_update_rules_path, class: "icon-auto-update-status" %>
 </div>
 
-<h2><%= l :label_auto_update_rules %></h2>
+<h2><%= l :label_apply_auto_update_rule %></h2>
 
-<p>
-  <%= l 'issues_total_count' %>: <%= @issues_total_count %>
+<fieldset id="auto_update_rule">
+  <legend><%= l(:label_auto_update_rule) %></legend>
+  <span class="label" style="float: right;"><%= link_to l(:label_update_auto_update_rule), edit_auto_update_rule_path(@rule) %></span>
+
+  <span class="label"><%= l(:field_initial_status_plural) %></span> :
+  <span class="value"><%= @initial_statuses.join(" #{l 'conditional_or'} ") %></span><br/>
+
+  <span class="label"><%= l(:field_final_status) %></span> :
+  <span class="value"><%= @final_status %></span><br/>
+
   <br>
-  <%= l 'issues_to_be_updated' %>: <%= @issues_to_change_count %>
-</p>
+
+  <span class="label"><%= l(:label_auto_update_note) %></span> :
+  <span class="value"><%= @rule.note.truncate(40) %></span><br/>
+
+  <span class="label"><%= l(:field_time_limit) %></span> :
+  <span class="value"><%= l 'time_in_days', days: @rule.time_limit %></span><br/>
+
+  <span class="label"><%= l(:field_parent_project) %></span> :
+  <span class="value"><%= link_to_project @rule.project %></span><br/>
+
+  <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids.present? %>
+    <span class="label"><%= l(:field_issues_assigned_to) %></span> :
+    <span class="value"><%= Organization.where(id: @rule.organization_ids).join(" #{l 'conditional_or'} ") %></span><br/>
+  <% end %>
+
+  <br/>
+
+  <span class="label"><%= l(:label_automatic_daily_run) %></span> :
+  <span class="value <%= @rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>" style="margin-left: 10px;"></span><br/>
+
+  <span class="label"><%= l(:field_update_author) %></span> :
+  <span class="value"><%= link_to_user @rule.author %></span><br/>
+
+  <br/>
+
+  <hr>
+  <%= l("show_auto_update_rule_results", issues_count: @issues_to_change_count) %>
+  <br>
+  <%= l 'issues_total_count' %>: <%= @issues_total_count %>
+</fieldset>
+
+<br>
 
 <table class="list">
   <thead>

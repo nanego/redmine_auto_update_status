@@ -1,4 +1,4 @@
-<% html_title(l(:label_auto_update_rule)) %>
+<% html_title(l(:label_auto_update_rules)) %>
 
 <div class="contextual">
   <%= link_to(l(:label_new_auto_update_rule),
@@ -6,7 +6,7 @@
               :class => 'icon icon-add', :method => :get) %>
 </div>
 
-<h2><%= h "#{l(:label_auto_update_rule)}" %></h2>
+<h2><span class="icon icon-auto-update-status"><%= h "#{l(:label_auto_update_rules)}" %></span></h2>
 
 <% if @notice %>
   <div class="flash notice"><%= @notice %></div>
@@ -28,6 +28,7 @@
         <th class="rule_final_status"><%= l(:field_final_status) %></th>
         <th><%= l(:label_subprojects_of) %></th>
         <th><%= l(:field_time_limit) %></th>
+        <th><%= l(:label_automatic_daily_run) %></th>
         <th></th>
       </tr>
       </thead>
@@ -41,6 +42,7 @@
           <td><%= h(final_status) %></td>
           <td><%= h(rule.project) %></td>
           <td><%= l 'time_in_days', days: rule.time_limit %></td>
+          <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>"></span></td>
 
           <td class="buttons">
             <%= link_to l(:button_edit), edit_auto_update_rule_path(id: rule.id), :class => 'icon icon-edit' %>

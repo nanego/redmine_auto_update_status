@@ -9,6 +9,7 @@ class AutoUpdateRulesController < ApplicationController
 
   def show
     @rule = AutoUpdateRule.find(params[:id])
+    @initial_statuses = IssueStatus.where(id: @rule.initial_status_ids)
     @final_status = IssueStatus.find_by_id(@rule.final_status_id)
 
     @issues_total_count = Issue.count

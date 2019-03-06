@@ -5,23 +5,53 @@
   <div class="box tabular">
     <div id="auto_update_rule_attributes">
 
-      <p><%= f.select :initial_status_ids,
-                      options_for_select(IssueStatus.sorted.map {|s| [s.name, s.id]}, @rule.initial_status_ids),
-                      {label: l(:field_initial_status_plural)},
-                      multiple: true %></p>
+      <div class="splitcontent">
 
-      <p><%= f.select :final_status_id,
-                      options_for_select(IssueStatus.sorted.map {|s| [s.name, s.id]}, @rule.final_status_id),
-                      {label: l(:field_final_status), required: true},
-                      {multiple: false} %></p>
+        <div class="splitcontentleft">
+          <p><%= f.select :initial_status_ids,
+                          options_for_select(IssueStatus.sorted.map {|s| [s.name, s.id]}, @rule.initial_status_ids),
+                          {label: l(:field_initial_status_plural)},
+                          multiple: true %></p>
 
-      <p><%= f.text_area :note %></p>
+          <p><%= f.select :final_status_id,
+                          options_for_select(IssueStatus.sorted.map {|s| [s.name, s.id]}, @rule.final_status_id),
+                          {label: l(:field_final_status), required: true},
+                          {multiple: false} %></p>
 
-      <p><%= f.text_field :time_limit, {label: l(:field_time_limit_in_days), required: true} %></p>
+          <p><%= f.text_field :time_limit, {label: l(:field_time_limit_in_days), required: true} %></p>
 
-      <p><%= f.select :project_id,
-                      project_tree_options_for_select(Project.active.sorted, :selected => @rule.project),
-                      {label: l(:field_parent_project), :include_blank => true} %></p>
+          <p><%= f.select :project_id,
+                          project_tree_options_for_select(Project.active.sorted, :selected => @rule.project),
+                          {label: l(:field_parent_project), :include_blank => true} %></p>
+
+          <p><%= f.text_area :note, {label: l(:label_auto_update_note)} %></p>
+
+          <% if Redmine::Plugin.installed?(:redmine_organizations) %>
+            <p>
+              <%= f.select :organization_ids,
+                           options_for_select(nested_set_options(Organization) {|i| i.fullname}, @rule.organization_ids),
+                           {label: l(:field_issues_assigned_to)},
+                           {class: "orga-select2", multiple: true} %>
+            </p>
+          <% end %>
+
+        </div>
+
+        <div class="splitcontentright">
+          <fieldset id="auto_update_rule">
+            <legend><%= l(:label_automatic_daily_run) %></legend>
+            <p>
+              <%= f.check_box :enabled, {label: l(:label_enabled_rule)} %>
+            </p>
+            <p>
+              <%= f.select :author_id,
+                           principals_options_for_select(User.active.sorted, @rule.author),
+                           {label: l(:field_update_author), required: true} %>
+            </p>
+          </fieldset>
+        </div>
+
+      </div>
 
     </div>
   </div>
