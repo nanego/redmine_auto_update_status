@@ -41,6 +41,9 @@
   <br/>
 
   <hr>
+  <span class="label" style="float: right;">
+    <%= link_to l(:label_apply_to_all), apply_auto_update_rule_path(id: @rule.id, apply_to_all: true), method: :post %>
+  </span>
   <%= l("show_auto_update_rule_results", issues_count: @issues_to_change_count) %>
   <br>
   <%= l 'issues_total_count' %>: <%= @issues_total_count %>
