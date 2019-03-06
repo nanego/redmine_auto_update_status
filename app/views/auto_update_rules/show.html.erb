@@ -22,10 +22,12 @@
   <span class="label"><%= l(:field_time_limit) %></span> :
   <span class="value"><%= l 'time_in_days', days: @rule.time_limit %></span><br/>
 
-  <span class="label"><%= l(:field_parent_project) %></span> :
-  <span class="value"><%= link_to_project @rule.project %></span><br/>
+  <% if @rule.project.present? %>
+    <span class="label"><%= l(:field_parent_project) %></span> :
+    <span class="value"><%= link_to_project @rule.project %></span><br/>
+  <% end %>
 
-  <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids.present? %>
+  <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids.reject(&:blank?).present? %>
     <span class="label"><%= l(:field_issues_assigned_to) %></span> :
     <span class="value"><%= Organization.where(id: @rule.organization_ids).join(" #{l 'conditional_or'} ") %></span><br/>
   <% end %>

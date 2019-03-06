@@ -18,7 +18,7 @@
                           {label: l(:field_final_status), required: true},
                           {multiple: false} %></p>
 
-          <p><%= f.text_field :time_limit, {label: l(:field_time_limit_in_days), required: true} %></p>
+          <p><%= f.text_field :time_limit, {label: l(:field_time_limit_in_days), required: false} %></p>
 
           <p><%= f.select :project_id,
                           project_tree_options_for_select(Project.active.sorted, :selected => @rule.project),

@@ -7,16 +7,16 @@ class AutoUpdateRule < ActiveRecord::Base
 
   safe_attributes "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_id", "enabled", "organization_ids"
 
-  validates_presence_of :final_status_id, :time_limit
+  validates_presence_of :final_status_id, :author_id
 
   belongs_to :project
   belongs_to :author, class_name: 'User', foreign_key: :author_id
 
   def issues
     initial_statuses = IssueStatus.where(id: initial_status_ids)
-    issues_to_change = Issue.order(updated_on: :desc)
+    issues_to_change = Issue.joins(:project).where('projects.status = (?)', Project::STATUS_ACTIVE).order(updated_on: :desc)
     issues_to_change = issues_to_change.where(status_id: initial_statuses) if initial_statuses
-    issues_to_change = issues_to_change.where("updated_on < ?", time_limit.days.ago) if time_limit
+    issues_to_change = issues_to_change.where("issues.updated_on < ?", time_limit.days.ago) if time_limit
     issues_to_change = issues_to_change.where(project: project.self_and_descendants) if project
 
     if Redmine::Plugin.installed?(:redmine_organizations) && organization_ids.present?
