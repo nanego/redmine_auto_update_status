@@ -21,7 +21,7 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
   context "POST create" do
 
     it "redirects to auto update rules page" do
-      params = { auto_update_rule: { note: "This is a note" } }
+      params = {auto_update_rule: {note: "This is a note", final_status_id: 5, author_id: 1}} # Closed by Admin
       post :create, params: params
 
       expect(response).to redirect_to(auto_update_rules_path)

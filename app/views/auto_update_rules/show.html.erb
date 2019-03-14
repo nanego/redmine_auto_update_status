@@ -27,7 +27,7 @@
     <span class="value"><%= link_to_project @rule.project %></span><br/>
   <% end %>
 
-  <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids.reject(&:blank?).present? %>
+  <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids && @rule.organization_ids.reject(&:blank?).present? %>
     <span class="label"><%= l(:field_issues_assigned_to) %></span> :
     <span class="value"><%= Organization.where(id: @rule.organization_ids).join(" #{l 'conditional_or'} ") %></span><br/>
   <% end %>
@@ -59,6 +59,7 @@
     <th><%= l 'field_project' %></th>
     <th><%= l 'field_created_on' %></th>
     <th><%= l 'field_subject' %></th>
+    <th><%= l 'field_assigned_to' %></th>
     <th><%= l 'field_status' %></th>
     <th><%= l 'field_final_status' %></th>
     <th><%= l 'button_actions' %></th>
@@ -69,7 +70,8 @@
     <tr>
       <td><%= link_to_project(issue.project) %></td>
       <td><%= format_date(issue.created_on) %></td>
-      <td><%= link_to_issue issue %></td>
+      <td style="text-align: left;"><%= link_to_issue issue %></td>
+      <td><%= link_to_user issue.assigned_to %></td>
       <td><%= issue.status %></td>
       <td><%= @final_status %></td>
       <td><%= link_to l('apply_change'), apply_auto_update_rule_path(id: @rule.id, issue_id: issue.id), method: :post %></td>
