@@ -27,6 +27,7 @@
         <th class="rule_initial_status"><%= l(:field_initial_status_plural) %></th>
         <th class="rule_final_status"><%= l(:field_final_status) %></th>
         <th><%= l(:label_subprojects_of) %></th>
+        <th><%= l(:label_tracker_plural) %></th>
         <th><%= l(:field_time_limit) %></th>
         <th><%= l(:label_automatic_daily_run) %></th>
         <th></th>
@@ -36,11 +37,13 @@
       <% @rules.each do |rule| %>
         <% initial_statuses = IssueStatus.where(id: rule.initial_status_ids).join(', ') %>
         <% final_status = IssueStatus.where(id: rule.final_status_id).join(', ') %>
+        <% trackers = Tracker.where(id: rule.tracker_ids).join(', ') %>
         <tr class="rule">
           <td style="text-align: left;"><%= link_to l("show_auto_update_rule_results", issues_count: rule.issues.count), auto_update_rule_path(rule), :class => 'icon icon-issue' %></td>
           <td><%= h(initial_statuses) %></td>
           <td><%= h(final_status) %></td>
           <td><%= h(rule.project) %></td>
+          <td><%= h(trackers) %></td>
           <td><%= l 'time_in_days', days: rule.time_limit %></td>
           <td><span class="<%= rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>"></span></td>
 

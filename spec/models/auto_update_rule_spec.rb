@@ -24,6 +24,10 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(AutoUpdateRule.new(author_id: 1)).to have_attributes(author_id: 1)
     end
 
+    it "has tracker_ids" do
+      expect(AutoUpdateRule.new(tracker_ids: [1, 3])).to have_attributes(tracker_ids: [1, 3])
+    end
+
   end
 
 

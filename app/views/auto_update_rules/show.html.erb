@@ -27,6 +27,11 @@
     <span class="value"><%= link_to_project @rule.project %></span><br/>
   <% end %>
 
+  <% if @rule.tracker_ids.present? && @rule.tracker_ids.reject(&:blank?).present? %>
+    <span class="label"><%= l(:label_tracker_plural) %></span> :
+    <span class="value"><%= Tracker.where(id: @rule.tracker_ids).join(" #{l 'conditional_or'} ") %></span><br/>
+  <% end %>
+
   <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids && @rule.organization_ids.reject(&:blank?).present? %>
     <span class="label"><%= l(:field_issues_assigned_to) %></span> :
     <span class="value"><%= Organization.where(id: @rule.organization_ids).join(" #{l 'conditional_or'} ") %></span><br/>
