@@ -15,15 +15,16 @@ class AutoUpdateRule < ActiveRecord::Base
 
   def issues
     initial_statuses = IssueStatus.where(id: initial_status_ids)
-    issues_to_change = Issue.joins(:project).where('projects.status = (?)', Project::STATUS_ACTIVE).order(updated_on: :desc)
+    issues_to_change = Issue.joins(:project).where('projects.status = ?', Project::STATUS_ACTIVE).order(updated_on: :desc)
+
     issues_to_change = issues_to_change.where(status_id: initial_statuses) if initial_statuses
     issues_to_change = issues_to_change.where("issues.updated_on < ?", time_limit.days.ago) if time_limit
     issues_to_change = issues_to_change.where(project: project.self_and_descendants) if project
-    issues_to_change = issues_to_change.where(tracker_id: tracker_ids) if tracker_ids.present? && tracker_ids.reject(&:blank?).present?
+    issues_to_change = issues_to_change.where(tracker_id: tracker_ids.reject(&:blank?)) if tracker_ids.present? && tracker_ids.reject(&:blank?).present?
 
     if Redmine::Plugin.installed?(:redmine_organizations) && organization_ids.present?
       assigned_to_ids = User.where(organization_id: organization_ids).pluck(:id)
-      issues_to_change = issues_to_change.where(assigned_to_id: assigned_to_ids)
+      issues_to_change = issues_to_change.where(assigned_to_id: assigned_to_ids) if assigned_to_ids.present?
     end
 
     issues_to_change
