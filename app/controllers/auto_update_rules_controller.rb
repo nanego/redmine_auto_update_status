@@ -77,7 +77,7 @@ class AutoUpdateRulesController < ApplicationController
 
   def apply
     @rule = AutoUpdateRule.find(params[:id])
-    new_issue_params = {note: @rule.note, user: User.current, new_status_id: @rule.final_status_id}
+    new_issue_params = {note: @rule.note, user: @rule.author, new_status_id: @rule.final_status_id}
     if params[:issue_id]
       issue = Issue.find_by_id(params[:issue_id])
       if @rule.issues.include?(issue)

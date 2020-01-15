@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe AutoUpdateRulesController, :type => :controller do
 
+  render_views
+
+  fixtures :users
+
   before do
     User.current = User.find(1)
     @request.session[:user_id] = 1 # admin
