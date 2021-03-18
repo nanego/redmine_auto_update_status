@@ -17,8 +17,8 @@ class AutoUpdateRulesController < ApplicationController
     @issues_to_change_count = @issues_to_change.count
     @issues_to_change_pages = Paginator.new @issues_to_change_count, per_page_option, params[:page]
     @issues_to_change_paginated = @issues_to_change.includes(:project, :tracker, :priority, :status)
-                                      .limit(@issues_to_change_pages.per_page)
-                                      .offset(@issues_to_change_pages.offset)
+                                                   .limit(@issues_to_change_pages.per_page)
+                                                   .offset(@issues_to_change_pages.offset)
   end
 
   def new
@@ -38,7 +38,7 @@ class AutoUpdateRulesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html {render :action => :new}
+        format.html { render :action => :new }
       end
     end
   end
@@ -59,7 +59,7 @@ class AutoUpdateRulesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html {render action: :edit}
+        format.html { render action: :edit }
       end
     end
   end
@@ -77,17 +77,12 @@ class AutoUpdateRulesController < ApplicationController
 
   def apply
     @rule = AutoUpdateRule.find(params[:id])
-    new_issue_params = {note: @rule.note, user: @rule.author, new_status_id: @rule.final_status_id}
     if params[:issue_id]
       issue = Issue.find_by_id(params[:issue_id])
-      if @rule.issues.include?(issue)
-        issue.change_status(new_issue_params)
-      end
+      @rule.apply_to_issue(issue)
     else
       if params[:apply_to_all] == 'true'
-        @rule.issues.each do |issue|
-          issue.change_status(new_issue_params)
-        end
+        @rule.apply_to_all_issues
       end
     end
 

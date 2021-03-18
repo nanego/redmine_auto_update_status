@@ -26,6 +26,6 @@ en:
   label_all_auto_update_rules: "See all rules"
   label_update_auto_update_rule: "Modify this rule"
   field_update_author: "Author of the automatic update"
-  label_automatic_daily_run: "Daily automatic change"
+  label_automatic_daily_run: "Daily automatic run"
   field_issues_assigned_to: "Assigned to a member of theses organizations"
   label_enabled_rule: "Activated"

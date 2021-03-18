@@ -26,6 +26,6 @@ fr:
   label_all_auto_update_rules: "Voir toutes les règles"
   label_update_auto_update_rule: "Modifier cette règle"
   field_update_author: "Auteur apparaissant sur la mise à jour automatique"
-  label_automatic_daily_run: "Déclenchement automatique quotidien"
+  label_automatic_daily_run: "Déclenchement automatique"
   field_issues_assigned_to: "Assignés à un membre de ces organisations"
   label_enabled_rule: "Activé"

@@ -6,12 +6,14 @@ class AutoUpdateRule < ActiveRecord::Base
   serialize :tracker_ids
   serialize :organization_ids
 
-  safe_attributes "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_id", "enabled", "organization_ids", "tracker_ids"
+  safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_id", "enabled", "organization_ids", "tracker_ids"
 
   validates_presence_of :final_status_id, :author_id
 
   belongs_to :project
   belongs_to :author, class_name: 'User', foreign_key: :author_id
+
+  scope :active, -> { where(enabled: true) }
 
   def issues
     initial_statuses = IssueStatus.where(id: initial_status_ids)
@@ -28,6 +30,22 @@ class AutoUpdateRule < ActiveRecord::Base
     end
 
     issues_to_change
+  end
+
+  def apply_to_all_issues
+    issues.find_each do |issue|
+      issue.change_status(new_issue_params)
+    end
+  end
+
+  def apply_to_issue(issue)
+    if issues.include?(issue)
+      issue.change_status(new_issue_params)
+    end
+  end
+
+  def new_issue_params
+    { note: note, user: author, new_status_id: final_status_id }
   end
 
 end

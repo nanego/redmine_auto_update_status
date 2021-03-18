@@ -8,6 +8,9 @@
   <legend><%= l(:label_auto_update_rule) %></legend>
   <span class="label" style="float: right;"><%= link_to l(:label_update_auto_update_rule), edit_auto_update_rule_path(@rule) %></span>
 
+  <span class="label"><%= l(:field_name) %></span> :
+  <span class="value"><%= @rule.name %></span><br/>
+
   <span class="label"><%= l(:field_initial_status_plural) %></span> :
   <span class="value"><%= @initial_statuses.join(" #{l 'conditional_or'} ") %></span><br/>
 
