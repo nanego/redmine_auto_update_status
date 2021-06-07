@@ -2,33 +2,72 @@ require 'spec_helper'
 
 RSpec.describe AutoUpdateRule, :type => :model do
 
+  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects
+
+  let!(:rule) { AutoUpdateRule.find(1) }
+  let!(:issue_7) { Issue.find(7) }
+
   context "attributes" do
 
     it "has initial_status_ids" do
-      expect(AutoUpdateRule.new(initial_status_ids: [3, 4])).to have_attributes(initial_status_ids: [3, 4])
+      expect(rule).to have_attributes(initial_status_ids: [1, 2])
     end
 
     it "has final_status_id" do
-      expect(AutoUpdateRule.new(final_status_id: 5)).to have_attributes(final_status_id: 5)
+      expect(rule).to have_attributes(final_status_id: 5)
     end
 
     it "has time_limit" do
-      expect(AutoUpdateRule.new(time_limit: 30)).to have_attributes(time_limit: 30)
+      expect(rule).to have_attributes(time_limit: 5)
     end
 
     it "has note" do
-      expect(AutoUpdateRule.new(note: 'TEST')).to have_attributes(note: 'TEST')
+      expect(rule).to have_attributes(note: 'Automatically closed')
     end
 
     it "has author_id" do
-      expect(AutoUpdateRule.new(author_id: 1)).to have_attributes(author_id: 1)
+      expect(rule).to have_attributes(author_id: 1)
     end
 
     it "has tracker_ids" do
-      expect(AutoUpdateRule.new(tracker_ids: [1, 3])).to have_attributes(tracker_ids: [1, 3])
+      expect(rule).to have_attributes(tracker_ids: nil)
     end
 
   end
 
+  context "rule's issues" do
+    it "returns some issues for a specific rule" do
+      expect(rule.issues.size).to be > 1
+      expect(rule.issues).to include issue_7
+    end
+  end
+
+  context "apply rules" do
+    it 'applies a rule to a specific issue' do
+      expect(rule.issues).to include issue_7
+      expect(issue_7.status_id).to eq 1
+
+      rule.apply_to_issue(issue_7)
+      issue_7.reload
+
+      expect(rule.issues).to_not include issue_7
+      expect(issue_7.status_id).to eq 5
+    end
+
+    it "can apply rules without changing the status" do
+      rule.update(final_status_id: 1)
+
+      expect(rule.issues).to include issue_7
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.last_notes).to eq nil
+
+      rule.apply_to_issue(issue_7)
+      issue_7.reload
+
+      expect(rule.issues).to_not include issue_7
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.last_notes).to eq "Automatically closed"
+    end
+  end
 
 end

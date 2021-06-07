@@ -1,0 +1,12 @@
+one:
+  id: 1
+  initial_status_ids: [1, 2]
+  final_status_id: 5
+  time_limit: 5
+  note: Automatically closed
+  author_id: 1
+  project_id:
+  enabled: true
+  organization_ids:
+  tracker_ids:
+  name: Default rule
