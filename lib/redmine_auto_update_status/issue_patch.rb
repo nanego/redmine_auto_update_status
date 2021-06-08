@@ -6,5 +6,11 @@ module RedmineAutoUpdateStatus
       self.attributes = {"status_id" => "#{new_status.id}"} if new_status
       save
     end
+
+    def add_notes(notes:, user:)
+      if last_notes != notes
+        Journal.create(:journalized => self, :user => user, :notes => notes)
+      end
+    end
   end
 end

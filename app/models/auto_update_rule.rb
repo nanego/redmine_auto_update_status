@@ -8,7 +8,7 @@ class AutoUpdateRule < ActiveRecord::Base
 
   safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_id", "enabled", "organization_ids", "tracker_ids"
 
-  validates_presence_of :final_status_id, :author_id
+  validates_presence_of :author_id
 
   belongs_to :project
   belongs_to :author, class_name: 'User', foreign_key: :author_id
@@ -33,14 +33,20 @@ class AutoUpdateRule < ActiveRecord::Base
   end
 
   def apply_to_all_issues
-    issues.find_each do |issue|
-      issue.change_status(new_issue_params)
+    if final_status_id.present?
+      issues.each { |issue| issue.change_status(new_issue_params) }
+    else
+      issues.each { |issue| issue.add_notes(notes: note, user: author) }
     end
   end
 
   def apply_to_issue(issue)
-    if issues.include?(issue)
+    return unless issues.include?(issue)
+
+    if final_status_id.present?
       issue.change_status(new_issue_params)
+    else
+      issue.add_notes(notes: note, user: author)
     end
   end
 

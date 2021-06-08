@@ -68,6 +68,29 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(issue_7.status_id).to eq 1
       expect(issue_7.last_notes).to eq "Automatically closed"
     end
+
+    it "can apply a rule without final status" do
+      rule.update(final_status_id: nil)
+
+      # Initial state
+      expect(rule.issues).to include issue_7
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.last_notes).to eq nil
+
+      # Apply rule
+      rule.apply_to_issue(issue_7)
+
+      # Result
+      issue_7.reload
+      expect(rule.issues).to include issue_7
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.last_notes).to eq "Automatically closed"
+
+      # Re-applying the same rule does NOT add the same notes multiple times
+      expect{
+        rule.apply_to_issue(issue_7)
+      }.to_not change(Journal, :count)
+    end
   end
 
 end
