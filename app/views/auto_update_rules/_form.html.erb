@@ -26,7 +26,7 @@
           <p>
             <%= f.label l(:label_project_plural) %>
             <span class="select_projects" id="select_projects" style="display: block;">
-              <%= f.select :project_ids, project_tree_options(@rule.allowed_target_projects, :selected => @rule.projects),
+              <%= f.select :project_ids, project_tree_options_for_select(@rule.allowed_target_projects, :selected => @rule.projects),
                            { :required => false, label: "" },
                            { :multiple => true, :size => 10, style: "display:none;" } %>
               <span id="my_projects">
