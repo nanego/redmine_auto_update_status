@@ -25,9 +25,9 @@
   <span class="label"><%= l(:field_time_limit) %></span> :
   <span class="value"><%= l 'time_in_days', days: @rule.time_limit %></span><br/>
 
-  <% if @rule.project.present? %>
-    <span class="label"><%= l(:field_parent_project) %></span> :
-    <span class="value"><%= link_to_project @rule.project %></span><br/>
+  <% if @rule.projects.present? %>
+    <span class="label"><%= l(:label_project_plural) %></span> :
+    <span class="value"><%= @rule.projects.size > 3 ? "#{@rule.projects.count} #{l(:label_project_plural)}" : @rule.projects.map { |p| link_to_project p }.join(', ').html_safe %></span><br/>
   <% end %>
 
   <% if @rule.tracker_ids.present? && @rule.tracker_ids.reject(&:blank?).present? %>

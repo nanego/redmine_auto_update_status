@@ -1,4 +1,4 @@
-<%= labelled_form_for @rule, :html => {:id => 'auto-update-rule-form', :name => 'auto-update-rule-form_name'} do |f| %>
+<%= labelled_form_for @rule, :html => { :id => 'auto_update_rule_form' } do |f| %>
 
   <%= error_messages_for @rule %>
 
@@ -9,37 +9,56 @@
 
         <div class="splitcontentleft">
 
-          <p><%= f.text_field :name, {label: l(:field_name), required: false} %></p>
+          <p><%= f.text_field :name, { label: l(:field_name), required: false } %></p>
 
           <p><%= f.select :initial_status_ids,
-                          options_for_select(IssueStatus.sorted.map {|s| [s.name, s.id]}, @rule.initial_status_ids),
-                          {label: l(:field_initial_status_plural)},
-                          {class: "orga-select2", multiple: true} %></p>
+                          options_for_select(IssueStatus.sorted.map { |s| [s.name, s.id] }, @rule.initial_status_ids),
+                          { label: l(:field_initial_status_plural) },
+                          { class: "orga-select2", multiple: true } %></p>
 
           <p><%= f.select :final_status_id,
-                          options_for_select(IssueStatus.sorted.map {|s| [s.name, s.id]}, @rule.final_status_id),
-                          {label: l(:field_final_status), required: false, include_blank: true},
-                          {multiple: false} %></p>
+                          options_for_select(IssueStatus.sorted.map { |s| [s.name, s.id] }, @rule.final_status_id),
+                          { label: l(:field_final_status), required: false, include_blank: true },
+                          { multiple: false } %></p>
 
-          <p><%= f.number_field :time_limit, {label: l(:field_time_limit_in_days), required: false} %></p>
+          <p><%= f.number_field :time_limit, { label: l(:field_time_limit_in_days), required: false } %></p>
 
-          <p><%= f.select :project_id,
-                          project_tree_options_for_select(Project.active.sorted, :selected => @rule.project),
-                          {label: l(:field_parent_project), :include_blank => true} %></p>
+          <p>
+            <%= f.label l(:label_project_plural) %>
+            <span class="select_projects" id="select_projects" style="display: block;">
+              <%= f.select :project_ids, project_tree_options(@rule.allowed_target_projects, :selected => @rule.projects),
+                           { :required => false, label: "" },
+                           { :multiple => true, :size => 10, style: "display:none;" } %>
+              <span id="my_projects">
+              <% @rule.projects.each do |project| %>
+                <%= content_tag("span", project.name.gsub(/ /, "&nbsp;").html_safe, class: "list_projects_names") %>
+              <% end %>
+            </span>
+          </span>
+
+            <%= link_to l("button_edit"), '#', id: "link_update_project_list", :onclick => 'showModal("ajax-modal", "1000px");$("#button_apply_projects").focus();' %>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#ajax-modal').html('<%= escape_javascript(render :partial => 'auto_update_rules/modal_select_projects') %>');
+                });
+            </script>
+
+          </p>
 
           <p><%= f.select :tracker_ids,
-                          options_for_select(Tracker.sorted.map {|s| [s.name, s.id]}, @rule.tracker_ids),
-                          {label: l(:label_tracker_plural)},
-                          {class: "orga-select2", multiple: true} %></p>
+                          options_for_select(Tracker.sorted.map { |s| [s.name, s.id] }, @rule.tracker_ids),
+                          { label: l(:label_tracker_plural) },
+                          { class: "orga-select2", multiple: true } %></p>
 
           <p><%= f.text_area :note, rows: 6, label: l(:label_auto_update_note) %></p>
 
           <% if Redmine::Plugin.installed?(:redmine_organizations) %>
             <p>
               <%= f.select :organization_ids,
-                           options_for_select(nested_set_options(Organization) {|i| i.fullname}, @rule.organization_ids),
-                           {label: l(:field_issues_assigned_to)},
-                           {class: "orga-select2", multiple: true} %>
+                           options_for_select(nested_set_options(Organization) { |i| i.fullname }, @rule.organization_ids),
+                           { label: l(:field_issues_assigned_to) },
+                           { class: "orga-select2", multiple: true } %>
             </p>
           <% end %>
 
@@ -49,12 +68,12 @@
           <fieldset id="auto_update_rule">
             <legend><%= l(:label_automatic_daily_run) %></legend>
             <p>
-              <%= f.check_box :enabled, {label: l(:label_enabled_rule)} %>
+              <%= f.check_box :enabled, { label: l(:label_enabled_rule) } %>
             </p>
             <p>
               <%= f.select :author_id,
                            principals_options_for_select(User.active.sorted, @rule.author),
-                           {label: l(:field_update_author), required: true} %>
+                           { label: l(:field_update_author), required: true } %>
             </p>
           </fieldset>
         </div>
@@ -65,7 +84,5 @@
   </div>
 
   <%= submit_tag l(:button_save) %>
-
-  <%= javascript_tag "$('#issue_template_template_title').focus();" %>
 
 <% end %>

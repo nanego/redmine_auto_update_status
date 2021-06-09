@@ -1,0 +1,66 @@
+<% nested_projects_list = render_project_nested_lists(@rule.allowed_target_projects) do |project|
+  content_tag('label',
+              check_box_tag(
+                'project_ids[]',
+                project.id,
+                @rule.present? && @rule.projects.include?(project)
+              ) + ' ' + h(project.name))
+end
+%>
+
+<h3 class="title"><%= l(:label_project_plural) %></h3>
+
+<div class="actions_links">
+  <%= l("Selection") %> :
+  <%= link_to l("select_all"), '#', id: "link_select_all", :onclick => "select_all()" %>
+  |
+  <%= link_to l("select_none"), '#', id: "link_select_all", :onclick => "select_none()" %>
+</div>
+
+<div class="projects_container">
+  <div class="columns" id="project_nested_list">
+    <%= nested_projects_list %>
+  </div>
+</div>
+
+<p class="buttons">
+  <%= submit_tag l(:button_apply), :name => nil, :onclick => "updateSelectedProjects();hideModal(this);", :type => 'button', :id => 'button_apply_projects' %>
+</p>
+
+<script type="text/javascript">
+
+    function updateSelectedProjects() {
+        $("select#auto_update_rule_project_ids option").each(function () {
+            this.selected = "";
+        });
+        var htmlContent = "";
+        $("input:checkbox[name='project_ids[]']:checked").each(function () {
+            $("#auto_update_rule_project_ids option[value=" + $(this).val() + "]").prop("selected", true);
+        });
+
+        $("input:checkbox[name='project_ids[]']:checked:not(.inactive)").each(function () {
+            htmlContent += "<span class=\"list_projects_names\">" + $(this).closest('label').text() + "</span>";
+        });
+        $("#my_projects").html(htmlContent);
+    }
+
+    function select_all() {
+        $("input:checkbox[name='project_ids[]']").each(function () {
+            this.setAttribute("checked", "checked");
+            this.checked = true;
+        });
+    }
+
+    function select_none() {
+        $("input:checkbox[name='project_ids[]']:checked:not(.inactive)").each(function () {
+            $(this).attr("checked", "");
+            $(this).removeAttr("checked");
+            $(this).checked = false;
+        });
+    }
+
+    $('#project_nested_list').on('change', "input:checkbox[name='project_ids[]']", function (event) {
+        $(event.target).closest('li').find("input:checkbox[name='project_ids[]']").prop('checked', $(event.target).is(':checked'));
+    })
+
+</script>

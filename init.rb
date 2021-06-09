@@ -2,6 +2,7 @@ require 'redmine_auto_update_status/hooks'
 
 ActiveSupport::Reloader.to_prepare do
   ::Issue.prepend RedmineAutoUpdateStatus::IssuePatch
+  require_dependency 'redmine_auto_update_status/project_patch'
 end
 
 Redmine::Plugin.register :redmine_auto_update_status do

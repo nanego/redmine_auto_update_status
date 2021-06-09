@@ -5,7 +5,6 @@ one:
   time_limit: 5
   note: Automatically closed
   author_id: 1
-  project_id:
   enabled: true
   organization_ids:
   tracker_ids:

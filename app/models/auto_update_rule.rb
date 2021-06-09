@@ -6,12 +6,14 @@ class AutoUpdateRule < ActiveRecord::Base
   serialize :tracker_ids
   serialize :organization_ids
 
-  safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_id", "enabled", "organization_ids", "tracker_ids"
+  safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids", "project_id", "enabled", "organization_ids", "tracker_ids"
 
   validates_presence_of :author_id
 
-  belongs_to :project
-  belongs_to :author, class_name: 'User', foreign_key: :author_id
+  belongs_to :project # TODO Remove this association later, after migration
+  has_many :auto_update_rule_projects
+  has_many :projects, through: :auto_update_rule_projects
+    belongs_to :author, class_name: 'User', foreign_key: :author_id
 
   scope :active, -> { where(enabled: true) }
 
@@ -21,7 +23,7 @@ class AutoUpdateRule < ActiveRecord::Base
 
     issues_to_change = issues_to_change.where(status_id: initial_statuses) if initial_statuses
     issues_to_change = issues_to_change.where("issues.updated_on < ?", time_limit.days.ago) if time_limit
-    issues_to_change = issues_to_change.where(project: project.self_and_descendants) if project
+    issues_to_change = issues_to_change.where(project: projects) if projects.present?
     issues_to_change = issues_to_change.where(tracker_id: tracker_ids.reject(&:blank?)) if tracker_ids.present? && tracker_ids.reject(&:blank?).present?
 
     if Redmine::Plugin.installed?(:redmine_organizations) && organization_ids.present?
@@ -52,6 +54,10 @@ class AutoUpdateRule < ActiveRecord::Base
 
   def new_issue_params
     { note: note, user: author, new_status_id: final_status_id }
+  end
+
+  def allowed_target_projects
+    Project.active
   end
 
 end
