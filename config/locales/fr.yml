@@ -1,7 +1,7 @@
 fr:
   label_auto_update_rule: "Règle de mise à jour automatique"
   label_auto_update_rules: "Règles de mise à jour automatique"
-  label_auto_update_status: "Mises à jour automatique"
+  label_auto_update_status: "Mises à jour automatiques"
   no_auto_update_rules: "Aucune règle n'a été paramétrée pour l'instant"
   label_new_auto_update_rule: "Ajouter une règle"
   field_initial_status_plural: "Statuts de départ"
