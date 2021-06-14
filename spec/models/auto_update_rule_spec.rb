@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe AutoUpdateRule, :type => :model do
 
-  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects
+  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations
 
   let!(:rule) { AutoUpdateRule.find(1) }
   let!(:issue_7) { Issue.find(7) }
