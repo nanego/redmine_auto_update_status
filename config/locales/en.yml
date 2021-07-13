@@ -27,3 +27,4 @@ en:
   label_automatic_daily_run: "Daily automatic run"
   field_issues_assigned_to: "Assigned to a member of theses organizations"
   label_enabled_rule: "Activated"
+  hint_no_final_status: Leave empty if you do not want to update the status
