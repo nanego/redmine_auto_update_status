@@ -4,7 +4,7 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
 
   render_views
 
-  fixtures :users
+  fixtures :users, :auto_update_rules
 
   before do
     User.current = User.find(1)

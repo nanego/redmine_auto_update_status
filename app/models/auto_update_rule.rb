@@ -13,7 +13,7 @@ class AutoUpdateRule < ActiveRecord::Base
   belongs_to :project # TODO Remove this association later, after migration
   has_many :auto_update_rule_projects
   has_many :projects, through: :auto_update_rule_projects
-    belongs_to :author, class_name: 'User', foreign_key: :author_id
+  belongs_to :author, class_name: 'User', foreign_key: :author_id
 
   scope :active, -> { where(enabled: true) }
 
@@ -35,25 +35,20 @@ class AutoUpdateRule < ActiveRecord::Base
   end
 
   def apply_to_all_issues
-    if final_status_id.present?
-      issues.each { |issue| issue.change_status(new_issue_params) }
-    else
-      issues.each { |issue| issue.add_notes(notes: note, user: author) }
+    issues.each do |issue|
+      issue.auto_update(notes: note,
+                        user: author,
+                        new_status_id: final_status_id,
+                        update_issue_timestamp: update_issue_timestamp)
     end
   end
 
   def apply_to_issue(issue)
     return unless issues.include?(issue)
-
-    if final_status_id.present?
-      issue.change_status(new_issue_params)
-    else
-      issue.add_notes(notes: note, user: author)
-    end
-  end
-
-  def new_issue_params
-    { note: note, user: author, new_status_id: final_status_id }
+    issue.auto_update(notes: note,
+                      user: author,
+                      new_status_id: final_status_id,
+                      update_issue_timestamp: update_issue_timestamp)
   end
 
   def allowed_target_projects

@@ -5,6 +5,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
   fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations
 
   let!(:rule) { AutoUpdateRule.find(1) }
+  let!(:rule_without_final_status) { AutoUpdateRule.find(2) }
   let!(:issue_7) { Issue.find(7) }
 
   context "attributes" do
@@ -70,27 +71,58 @@ RSpec.describe AutoUpdateRule, :type => :model do
     end
 
     it "can apply a rule without final status" do
-      rule.update(final_status_id: nil)
+      initial_timestamp = issue_7.updated_on
 
       # Initial state
-      expect(rule.issues).to include issue_7
+      expect(rule_without_final_status.final_status_id).to be_nil
+      expect(rule_without_final_status.issues).to include issue_7
       expect(issue_7.status_id).to eq 1
       expect(issue_7.last_notes).to eq nil
 
       # Apply rule
-      rule.apply_to_issue(issue_7)
+      rule_without_final_status.apply_to_issue(issue_7)
 
       # Result
       issue_7.reload
-      expect(rule.issues).to include issue_7
+
+      puts "issues : #{rule_without_final_status.issues.map(&:id).inspect}"
+
+      expect(rule_without_final_status.issues).to include issue_7
       expect(issue_7.status_id).to eq 1
-      expect(issue_7.last_notes).to eq "Automatically closed"
+      expect(issue_7.last_notes).to eq "Note added automatically"
+      expect(issue_7.updated_on).to eq initial_timestamp
 
       # Re-applying the same rule does NOT add the same notes multiple times
       expect{
-        rule.apply_to_issue(issue_7)
+        rule_without_final_status.apply_to_issue(issue_7)
       }.to_not change(Journal, :count)
     end
   end
 
+  it "can apply a rule without final status AND update issue timestamp" do
+    initial_timestamp = issue_7.updated_on
+    rule_without_final_status.update(update_issue_timestamp: true)
+
+    # Initial state
+    expect(rule_without_final_status.final_status_id).to be_nil
+    expect(rule_without_final_status.issues).to include issue_7
+    expect(issue_7.status_id).to eq 1
+    expect(issue_7.last_notes).to eq nil
+
+    # Apply rule
+    rule_without_final_status.apply_to_issue(issue_7)
+
+    # Result
+    issue_7.reload
+
+    expect(rule_without_final_status.issues).to_not include issue_7 #Issue has now been removed from rule.issues
+    expect(issue_7.status_id).to eq 1
+    expect(issue_7.last_notes).to eq "Note added automatically"
+    expect(issue_7.updated_on).to_not eq initial_timestamp
+
+    # Re-applying the same rule does NOT add the same notes multiple times
+    expect{
+      rule_without_final_status.apply_to_issue(issue_7)
+    }.to_not change(Journal, :count)
+  end
 end

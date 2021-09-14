@@ -9,7 +9,7 @@
 
         <div class="splitcontentleft">
 
-          <p><%= f.text_field :name, { label: l(:field_name), required: false } %></p>
+          <p><%= f.text_field :name, { label: l(:field_name), required: false, size: 80 } %></p>
 
           <p><%= f.select :initial_status_ids,
                           options_for_select(IssueStatus.sorted.map { |s| [s.name, s.id] }, @rule.initial_status_ids),
@@ -24,7 +24,15 @@
             <span><i><%= l('hint_no_final_status') %></i></span>
           </p>
 
-          <p><%= f.number_field :time_limit, { label: l(:field_time_limit_in_days), required: false } %></p>
+          <p>
+            <%= f.number_field :time_limit, { label: l(:field_time_limit_in_days), required: false } %>
+            <span><i><%= l('hint_based_on_issue_updated_at_field') %></i></span>
+          </p>
+
+          <p>
+            <%= f.check_box :update_issue_timestamp, { label: l(:label_update_issue_timestamp) } %>
+            <span><i><%= l('hint_only_when_status_is_not_updated') %></i></span>
+          </p>
 
           <p>
             <%= f.label l(:label_project_plural) %>

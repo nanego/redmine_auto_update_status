@@ -9,3 +9,15 @@ one:
   organization_ids:
   tracker_ids:
   name: Default rule
+  update_issue_timestamp: true
+two:
+  id: 2
+  initial_status_ids: [1, 2]
+  time_limit: 5
+  note: Note added automatically
+  author_id: 1
+  enabled: true
+  organization_ids:
+  tracker_ids:
+  name: This one does not udpate the status
+  update_issue_timestamp: false

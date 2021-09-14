@@ -1,7 +1,7 @@
 fr:
   label_auto_update_rule: "Règle de mise à jour automatique"
-  label_auto_update_rules: "Règles de mise à jour automatique"
-  label_auto_update_status: "Mises à jour automatiques"
+  label_auto_update_rules: "Règles de mise à jour automatique des demandes"
+  label_auto_update_status: "Mises à jour automatiques des demandes"
   no_auto_update_rules: "Aucune règle n'a été paramétrée pour l'instant"
   label_new_auto_update_rule: "Ajouter une règle"
   field_initial_status_plural: "Statuts de départ"
@@ -24,7 +24,10 @@ fr:
   label_all_auto_update_rules: "Voir toutes les règles"
   label_update_auto_update_rule: "Modifier cette règle"
   field_update_author: "Auteur apparaissant sur la mise à jour automatique"
-  label_automatic_daily_run: "Déclenchement automatique"
+  label_automatic_daily_run: "Déclenchement automatique quotidien"
   field_issues_assigned_to: "Assignés à un membre de ces organisations"
   label_enabled_rule: "Activé"
   hint_no_final_status: Laisser le champ vide si le statut ne doit pas être modifié
+  label_update_issue_timestamp: Mettre à jour la date de dernière modification de la demande
+  hint_only_when_status_is_not_updated: (en cas de changement de statut, la date sera toujours modifiée)
+  hint_based_on_issue_updated_at_field: Basé sur la date de mise à jour de la demande

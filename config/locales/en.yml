@@ -28,3 +28,6 @@ en:
   field_issues_assigned_to: "Assigned to a member of theses organizations"
   label_enabled_rule: "Activated"
   hint_no_final_status: Leave empty if you do not want to update the status
+  label_update_issue_timestamp: Update issue timestamp
+  hint_only_when_status_is_not_updated: (when the status is updated, the timestamp is always updated)
+  hint_based_on_issue_updated_at_field: Based on issue updated-at timestamp
