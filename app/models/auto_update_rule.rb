@@ -6,7 +6,8 @@ class AutoUpdateRule < ActiveRecord::Base
   serialize :tracker_ids
   serialize :organization_ids
 
-  safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids", "project_id", "enabled", "organization_ids", "tracker_ids"
+  safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids",
+                  "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp"
 
   validates_presence_of :author_id
 
