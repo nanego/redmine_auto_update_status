@@ -3,6 +3,7 @@ require 'spec_helper'
 RSpec.describe AutoUpdateRule, :type => :model do
 
   fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations
+  fixtures :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   let!(:rule) { AutoUpdateRule.find(1) }
   let!(:rule_without_final_status) { AutoUpdateRule.find(2) }
@@ -41,6 +42,35 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(rule.issues.size).to be > 1
       expect(rule.issues).to include issue_7
     end
+
+    it "returns some issues for a rule with assignment filter" do
+      rule.assignment = :none
+      expect(rule.issues.size).to be > 1
+      expect(rule.issues).to include issue_7
+      expect(rule.issues).to eq rule.issues.reject{|i|i.assigned_to.present?}
+    end
+
+    it "returns the issues assigned to a user" do
+      rule.assignment = :a_member
+      expect(rule.issues.size).to be > 1
+      expect(rule.issues).to include Issue.find(2)
+      expect(rule.issues).to eq rule.issues.reject{|i|i.assigned_to.blank?}
+    end
+
+    if Redmine::Plugin.installed?(:redmine_limited_visibility)
+      it "returns the issues assigned to a functional-role" do
+        function = Function.all.first
+        issue_2 = Issue.find(2)
+        issue_2.update(assigned_function: function, assigned_to: nil)
+        expect(issue_2.reload.assigned_function).to eq function
+        expect(issue_2.reload.assigned_to).to be_nil
+        rule.update(assignment: "a_functional_role", time_limit: nil)
+
+        expect(rule.issues.size).to be >= 1
+        expect(rule.issues).to include issue_2
+      end
+    end
+
   end
 
   context "apply rules" do
@@ -84,8 +114,6 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       # Result
       issue_7.reload
-
-      puts "issues : #{rule_without_final_status.issues.map(&:id).inspect}"
 
       expect(rule_without_final_status.issues).to include issue_7
       expect(issue_7.status_id).to eq 1

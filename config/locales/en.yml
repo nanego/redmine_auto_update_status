@@ -31,3 +31,5 @@ en:
   label_update_issue_timestamp: Update issue timestamp
   hint_only_when_status_is_not_updated: (when the status is updated, the timestamp is always updated)
   hint_based_on_issue_updated_at_field: Based on issue updated-at timestamp
+  label_a_member: "A member"
+  label_a_functional_role: "A functional role"

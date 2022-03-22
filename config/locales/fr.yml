@@ -31,3 +31,5 @@ fr:
   label_update_issue_timestamp: Mettre à jour la date de dernière modification de la demande
   hint_only_when_status_is_not_updated: (en cas de changement de statut, la date sera toujours modifiée)
   hint_based_on_issue_updated_at_field: Basé sur la date de mise à jour de la demande
+  label_a_member: "Un membre"
+  label_a_functional_role: "Un rôle fonctionnel"
