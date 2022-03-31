@@ -6,6 +6,7 @@ fr:
   label_new_auto_update_rule: "Ajouter une règle"
   field_initial_status_plural: "Statuts de départ"
   field_final_status: "Statut après changement"
+  field_final_priority: "Priorité après changement"
   label_auto_update_note: "Note ajoutée à la demande"
   notice_auto_update_rule_successfully_created: "La règle a bien été ajoutée."
   notice_auto_update_rule_successfully_updated: "La règle a bien été modifiée."
@@ -29,7 +30,9 @@ fr:
   label_enabled_rule: "Activé"
   hint_no_final_status: Laisser le champ vide si le statut ne doit pas être modifié
   label_update_issue_timestamp: Mettre à jour la date de dernière modification de la demande
-  hint_only_when_status_is_not_updated: (en cas de changement de statut, la date sera toujours modifiée)
+  hint_only_when_status_is_not_updated: (en cas de changement de statut ou de priorité, la date sera toujours modifiée)
   hint_based_on_issue_updated_at_field: Basé sur la date de mise à jour de la demande
   label_a_member: "Un membre"
   label_a_functional_role: "Un rôle fonctionnel"
+  label_higher_priority: ">> Priorité supérieure"
+  label_lower_priority: "<< Priorité inférieure"

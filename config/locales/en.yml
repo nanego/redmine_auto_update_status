@@ -6,6 +6,7 @@ en:
   label_new_auto_update_rule: "Add a rule"
   field_initial_status_plural: "Initial statuses"
   field_final_status: "Status after change"
+  field_final_priority: "Priority after change"
   label_auto_update_note: "Notes added to the issue"
   notice_auto_update_rule_successfully_created: "The rule has been created."
   notice_auto_update_rule_successfully_updated: "The rule has been updated."

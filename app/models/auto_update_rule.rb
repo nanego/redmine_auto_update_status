@@ -7,7 +7,7 @@ class AutoUpdateRule < ActiveRecord::Base
   serialize :organization_ids
 
   safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids",
-                  "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment"
+                  "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment", "final_priority"
 
   validates_presence_of :author_id
 
@@ -41,23 +41,30 @@ class AutoUpdateRule < ActiveRecord::Base
 
   def apply_to_all_issues
     issues.each do |issue|
-      issue.auto_update(notes: note,
-                        user: author,
-                        new_status_id: final_status_id,
-                        update_issue_timestamp: update_issue_timestamp)
+      issue.auto_update_by_rule(self)
     end
   end
 
   def apply_to_issue(issue)
     return unless issues.include?(issue)
-    issue.auto_update(notes: note,
-                      user: author,
-                      new_status_id: final_status_id,
-                      update_issue_timestamp: update_issue_timestamp)
+    issue.auto_update_by_rule(self)
   end
 
   def allowed_target_projects
     Project.active
+  end
+
+  def next_priority_for(issue:)
+    return if final_priority.blank?
+    if final_priority.to_i.to_s == final_priority.to_s
+      IssuePriority.where(id: final_priority).first
+    else
+      if final_priority == 'higher'
+        IssuePriority.where("position > ?", issue.priority.position).order(:position).first
+      elsif final_priority == 'lower'
+        IssuePriority.where("position < ?", issue.priority.position).order(:position).last
+      end
+    end
   end
 
   private

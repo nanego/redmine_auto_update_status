@@ -28,6 +28,7 @@
         <th></th>
         <th class="rule_initial_status"><%= l(:field_initial_status_plural) %></th>
         <th class="rule_final_status"><%= l(:field_final_status) %></th>
+        <th class="rule_final_priority"><%= l(:field_final_priority) %></th>
         <th><%= l(:label_project_plural) %></th>
         <th><%= l(:label_tracker_plural) %></th>
         <th><%= l(:field_time_limit) %></th>
@@ -45,6 +46,7 @@
           <td style="text-align: left;"><%= link_to l("show_auto_update_rule_results", issues_count: rule.issues.count), auto_update_rule_path(rule), :class => 'icon icon-issue' %></td>
           <td><%= h(initial_statuses) %></td>
           <td><%= h(final_status) %></td>
+          <td><%= final_priority_value(rule.final_priority) %></td>
           <td><%= (rule.projects.size < 3 ? rule.projects.map(&:name).join(', ') : "#{rule.projects.count} #{l(:label_project_plural)}") if rule.projects.any? %></td>
           <td><%= h(trackers) %></td>
           <td><%= l 'time_in_days', days: rule.time_limit %></td>

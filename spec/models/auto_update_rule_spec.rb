@@ -2,11 +2,12 @@ require 'spec_helper'
 
 RSpec.describe AutoUpdateRule, :type => :model do
 
-  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations
+  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations, :users
   fixtures :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   let!(:rule) { AutoUpdateRule.find(1) }
   let!(:rule_without_final_status) { AutoUpdateRule.find(2) }
+  let!(:rule_with_new_priority) { AutoUpdateRule.find(3) }
   let!(:issue_7) { Issue.find(7) }
 
   context "attributes" do
@@ -35,6 +36,10 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(rule).to have_attributes(tracker_ids: nil)
     end
 
+    it "has final_priority" do
+      expect(rule_with_new_priority).to have_attributes(final_priority: 'higher')
+    end
+
   end
 
   context "rule's issues" do
@@ -47,14 +52,14 @@ RSpec.describe AutoUpdateRule, :type => :model do
       rule.assignment = :none
       expect(rule.issues.size).to be > 1
       expect(rule.issues).to include issue_7
-      expect(rule.issues).to eq rule.issues.reject{|i|i.assigned_to.present?}
+      expect(rule.issues).to eq rule.issues.reject { |i| i.assigned_to.present? }
     end
 
     it "returns the issues assigned to a user" do
       rule.assignment = :a_member
       expect(rule.issues.size).to be > 1
       expect(rule.issues).to include Issue.find(2)
-      expect(rule.issues).to eq rule.issues.reject{|i|i.assigned_to.blank?}
+      expect(rule.issues).to eq rule.issues.reject { |i| i.assigned_to.blank? }
     end
 
     if Redmine::Plugin.installed?(:redmine_limited_visibility)
@@ -83,6 +88,32 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       expect(rule.issues).to_not include issue_7
       expect(issue_7.status_id).to eq 5
+    end
+
+    it 'applies a rule to a specific issue and change priority' do
+      expect(rule_with_new_priority.issues).to include issue_7
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.priority_id).to eq 5
+
+      rule_with_new_priority.apply_to_issue(issue_7)
+      issue_7.reload
+
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.priority_id).to eq 6
+    end
+
+    it 'applies a rule to a specific issue and change both priority and status' do
+      rule_with_new_priority.update(final_status_id: 5, final_priority: 'higher')
+
+      expect(rule_with_new_priority.issues).to include issue_7
+      expect(issue_7.status_id).to eq 1
+      expect(issue_7.priority_id).to eq 5
+
+      rule_with_new_priority.apply_to_issue(issue_7)
+      issue_7.reload
+
+      expect(issue_7.status_id).to eq 5
+      expect(issue_7.priority_id).to eq 6
     end
 
     it "can apply rules without changing the status" do
@@ -121,7 +152,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(issue_7.updated_on).to eq initial_timestamp
 
       # Re-applying the same rule does NOT add the same notes multiple times
-      expect{
+      expect {
         rule_without_final_status.apply_to_issue(issue_7)
       }.to_not change(Journal, :count)
     end
@@ -149,7 +180,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
     expect(issue_7.updated_on).to_not eq initial_timestamp
 
     # Re-applying the same rule does NOT add the same notes multiple times
-    expect{
+    expect {
       rule_without_final_status.apply_to_issue(issue_7)
     }.to_not change(Journal, :count)
   end

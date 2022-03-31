@@ -14,18 +14,18 @@ module RedmineAutoUpdateStatus
       save
     end
 
-    def auto_update(notes:, user:, new_status_id:, update_issue_timestamp:)
-      if new_status_id.present?
-        new_status = IssueStatus.find(new_status_id)
-        if new_status
-          self.attributes = { "status_id" => "#{new_status.id}" }
-          add_notes_and_update_issue(notes: notes, user: user)
-        end
+    def auto_update_by_rule(rule)
+      new_status = IssueStatus.find(rule.final_status_id) if rule.final_status_id.present?
+      new_priority = rule.next_priority_for(issue: self) if rule.final_priority.present?
+      if new_status || new_priority
+        self.attributes = { "status_id" => "#{new_status.id}" } if new_status
+        self.attributes = { "priority_id" => "#{new_priority.id}" } if new_priority
+        add_notes_and_update_issue(notes: rule.note, user: rule.author)
       else
-        if update_issue_timestamp
-          add_notes_and_update_issue(notes: notes, user: user)
+        if rule.update_issue_timestamp
+          add_notes_and_update_issue(notes: rule.note, user: rule.author)
         else
-          add_notes(notes: notes, user: user)
+          add_notes(notes: rule.note, user: rule.author)
         end
       end
     end

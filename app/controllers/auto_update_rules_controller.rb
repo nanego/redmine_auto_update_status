@@ -3,6 +3,9 @@ class AutoUpdateRulesController < ApplicationController
   before_action :require_admin
   layout 'admin'
 
+  helper :auto_update_status
+  include AutoUpdateStatusHelper
+
   def index
     @rules = AutoUpdateRule.order("id").all
   end

@@ -21,3 +21,16 @@ two:
   tracker_ids:
   name: This one does not udpate the status
   update_issue_timestamp: false
+three:
+  id: 3
+  initial_status_ids: [1, 2]
+  final_status_id:
+  final_priority: higher
+  time_limit: 5
+  note: Priority changed automatically
+  author_id: 1
+  enabled: true
+  organization_ids:
+  tracker_ids:
+  name: Rule with higher priority
+  update_issue_timestamp: true
