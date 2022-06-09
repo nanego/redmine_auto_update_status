@@ -96,4 +96,9 @@ class AutoUpdateRulesController < ApplicationController
       }
     end
   end
+
+  def copy
+    @rule_to_copy = AutoUpdateRule.find(params[:id])
+    @rule = @rule_to_copy.copy
+  end
 end

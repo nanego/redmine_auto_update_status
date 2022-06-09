@@ -36,3 +36,5 @@ fr:
   label_a_functional_role: "Un rôle fonctionnel"
   label_higher_priority: ">> Priorité supérieure"
   label_lower_priority: "<< Priorité inférieure"
+  label_copy_auto_update_rule: "Copier une règle"
+  label_copy_extension_auto_update_rule: "copie"
