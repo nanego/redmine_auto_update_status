@@ -98,7 +98,16 @@ class AutoUpdateRulesController < ApplicationController
   end
 
   def copy
-    @rule_to_copy = AutoUpdateRule.find(params[:id])
-    @rule = @rule_to_copy.copy
+    if request.get?
+      @rule_to_copy = AutoUpdateRule.find(params[:id])
+      @rule = @rule_to_copy.copy
+    else
+      @rule_to_copy = AutoUpdateRule.new
+      @rule_to_copy.safe_attributes = params[:auto_update_rule]
+      if @rule_to_copy.save
+        flash[:notice] = l(:notice_successful_create)
+        redirect_to  auto_update_rules_path(@project)
+      end
+    end
   end
 end

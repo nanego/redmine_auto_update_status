@@ -1,4 +1,4 @@
-<%= labelled_form_for @rule, :html => { :id => 'auto_update_rule_form' } do |f| %>
+ <%= labelled_form_for @rule, :url => defined?(url_action) ? url_action : nil, :html => { :id => 'auto_update_rule_form' } do |f| %>
 
   <%= error_messages_for @rule %>
 

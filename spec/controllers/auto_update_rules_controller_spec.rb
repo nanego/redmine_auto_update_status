@@ -48,14 +48,10 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
     it "Copy an auto-update rule without changes" do
         expect do
           post :copy, :params => {
+            :auto_update_rule => { name: "test", author_id: User.current.id } ,
             :id => rule_to_copy.id,
-            :auto_update_rules => {
-              :name => "test"
-            }
-
           }
         end.to change { AutoUpdateRule.count }.by(1)
-
 
     end
 
