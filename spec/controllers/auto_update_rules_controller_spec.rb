@@ -33,45 +33,58 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
 
   end
 
-  context "POST copy" do
-    # TODO :
-    # créer des nouvelles règles dans /home/julie/Documents/redmine/redmine/plugins/redmine_auto_update_status/spec/fixtures/auto_update_rules.yml
-    # créer de nouvelles relations règles/projets dans /home/julie/Documents/redmine/redmine/plugins/redmine_auto_update_status/spec/fixtures/auto_update_rule_project.yml
-    # PENSER A REMETTRE LES BONNES FIXTURES DANS LE CORE POUR LES TESTS
-    # Tester que la table a bien été incrémentée de 1
-    # Tester l'auteur
-    # Le nom du projet --> attention à la langue
-    # tester que les projets ait bien été copié
-
+  context "Copy" do
     let!(:rule_to_copy) { AutoUpdateRule.find(4) }
 
-    it "Copy an auto-update rule without changes" do
+    before do
+      AutoUpdateRuleProject.create(project_id: 1, auto_update_rule_id: rule_to_copy.id)
+      AutoUpdateRuleProject.create(project_id: 2, auto_update_rule_id: rule_to_copy.id)
+    end
+
+    let!(:aurp1) { AutoUpdateRuleProject.first }
+    let!(:aurp2) { AutoUpdateRuleProject.second }
+
+    it "GET assigns an existing rule to the view" do
+      get :copy, :params => {
+        :auto_update_rule => { name: "Title of copy", author_id: User.current.id } ,
+        :id => rule_to_copy.id,
+      }
+      expect(response).to be_successful
+      expect(assigns(:rule)).to be_a_new(AutoUpdateRule)
+      expect(assigns(:rule).projects.first.id).to eq(aurp1.id)
+      expect(assigns(:rule).projects.second.id).to eq(aurp2.id)
+    end
+
+    it "Copy an auto-update rule" do
+      expect do
+        post :copy, :params => {
+          :auto_update_rule => { name: "Title of copy", author_id: User.current.id } ,
+          :id => rule_to_copy.id,
+        }
+      end.to change { AutoUpdateRule.count }.by(1)
+
+      expect(response).to redirect_to(auto_update_rules_path)
+      expect(AutoUpdateRule.last.author_id).not_to eq(rule_to_copy.author_id)
+    end
+
+    it "Copy an auto-update rule with project" do
         expect do
           post :copy, :params => {
-            :auto_update_rule => { name: "test", author_id: User.current.id } ,
+            :auto_update_rule => { name: "Title of copy", author_id: User.current.id, project_ids: [aurp1.project_id, aurp2.project_id] } ,
             :id => rule_to_copy.id,
           }
         end.to change { AutoUpdateRule.count }.by(1)
+        .and change {AutoUpdateRuleProject.count}.by(2)
+
+        new_rule = AutoUpdateRule.last
+
+        expect(response).to redirect_to(auto_update_rules_path)
+        expect(new_rule.author_id).not_to eq(rule_to_copy.author_id)
+        expect(new_rule.project_ids.first).to eq(aurp1.project_id)
+        expect(new_rule.project_ids.second).to eq(aurp2.project_id)
 
     end
 
-    it "Copy an auto-update rule with changes" do
-      expect(true).to eq(true)
-    end
-
-    # exemple
-    # field = ProjectCustomField.first
-    #       expect do
-    #         patch :update, :params => {
-    #           :id => field.id,
-    #           :custom_field => {
-    #             :name => "new_name",
-    #             :description => "new_des",
-    #             :is_required => true,
-    #           }
-    #         }
-    #       end.to change { JournalSetting.count }.by(1)
-    # expect(JournalSetting.last.value_changes).to include({ "name" => [field.name, "new_name"] })
 
   end
 

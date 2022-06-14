@@ -35,17 +35,14 @@ three:
   name: Rule with higher priority
   update_issue_timestamp: true
 
-# TODO : Compléter pour test copie
 four:
   id: 4
   initial_status_ids: [1, 2]
-  final_status_id:
-  final_priority: higher
-  time_limit: 5
-  note: Priority changed automatically
+  time_limit: 7
+  note: Automatically closed
   author_id: 2
   enabled: true
   organization_ids:
   tracker_ids:
-  name: Rule with higher priority
+  name: Rule to copy
   update_issue_timestamp: true
