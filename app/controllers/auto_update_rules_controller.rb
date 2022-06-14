@@ -106,7 +106,7 @@ class AutoUpdateRulesController < ApplicationController
       @rule_to_copy.safe_attributes = params[:auto_update_rule]
       if @rule_to_copy.save
         flash[:notice] = l(:notice_successful_create)
-        redirect_to  auto_update_rules_path(@project)
+        redirect_to  auto_update_rules_path
       end
     end
   end
