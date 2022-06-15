@@ -70,8 +70,8 @@ class AutoUpdateRule < ActiveRecord::Base
   def copy
     new_rule = AutoUpdateRule.new
     new_rule.attributes = self.attributes.dup.except("id", "author_id")
-    new_rule.name = "#{new_rule.name} (#{l('label_copy_extension_auto_update_rule')})"
-    self.projects.each { |project| new_rule.projects << project }
+    new_rule.name = "#{new_rule.name} (#{l(:label_copy_extension_auto_update_rule)})"
+    new_rule.projects = self.projects
     new_rule.author = User.current
     new_rule
   end
