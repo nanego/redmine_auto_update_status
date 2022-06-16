@@ -25,9 +25,8 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
   context "POST create" do
 
     it "redirects to auto update rules page" do
-      params = {auto_update_rule: {note: "This is a note", final_status_id: 5, author_id: 1}} # Closed by Admin
+      params = { auto_update_rule: { note: "This is a note", final_status_id: 5, author_id: 1 } } # Closed by Admin
       post :create, params: params
-
       expect(response).to redirect_to(auto_update_rules_path)
     end
 
@@ -37,28 +36,24 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
     let!(:rule_to_copy) { AutoUpdateRule.find(4) }
 
     before do
-      AutoUpdateRuleProject.create(project_id: 1, auto_update_rule_id: rule_to_copy.id)
-      AutoUpdateRuleProject.create(project_id: 2, auto_update_rule_id: rule_to_copy.id)
+      rule_to_copy.projects = Project.where(id: [1, 2])
+      rule_to_copy.save
     end
 
-    let!(:rule_to_copy_projects_ids) { AutoUpdateRuleProject.where(auto_update_rule_id: rule_to_copy.id).map { |auto_update_rule_project| auto_update_rule_project.id } }
-
-    it "GET assigns an existing rule to the view" do
-      get :new, :params => {
-        :id => rule_to_copy.id,
+    it "initializes a copy of a rule" do
+      get :copy, :params => {
+        :id => rule_to_copy.id
       }
-
       expect(response).to be_successful
       expect(assigns(:rule)).to be_a_new(AutoUpdateRule)
-      new_rule_projects_ids = assigns(:rule).projects.map { |project| project.id }
-
-      expect(new_rule_projects_ids).to eq(rule_to_copy_projects_ids)
+      new_rule_projects_ids = assigns(:rule).projects.map(&:id)
+      expect(new_rule_projects_ids).to eq(rule_to_copy.project_ids)
     end
 
-    it "Copy an auto-update rule" do
+    it "copies an auto-update rule" do
       expect do
         post :create, :params => {
-          :auto_update_rule => { name: "Title of copy", author_id: User.current.id } ,
+          :auto_update_rule => { name: "Title of copy", author_id: User.current.id },
           :id => rule_to_copy.id,
         }
       end.to change { AutoUpdateRule.count }.by(1)
@@ -70,25 +65,24 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
       expect(auto_rule.name).to_not eq(rule_to_copy.name)
     end
 
-    it "Copy an auto-update rule with project" do
-        expect do
-          post :create, :params => {
-            :auto_update_rule => { name: "Title of copy",
-                                   author_id: User.current.id,
-                                   project_ids: rule_to_copy_projects_ids } ,
-            :id => rule_to_copy.id,
-          }
-        end.to change { AutoUpdateRule.count }.by(1)
-        .and change { AutoUpdateRuleProject.count }.by(2)
+    it "copies an auto-update rule with project" do
+      expect do
+        post :create, :params => {
+          :auto_update_rule => { name: "Title of copy",
+                                 author_id: User.current.id,
+                                 project_ids: rule_to_copy.project_ids },
+          :id => rule_to_copy.id,
+        }
+      end.to change { AutoUpdateRule.count }.by(1)
+                                            .and change { AutoUpdateRuleProject.count }.by(2)
 
-        expect(response).to redirect_to(auto_update_rules_path)
+      expect(response).to redirect_to(auto_update_rules_path)
 
-        new_rule = AutoUpdateRule.last
-        new_rule_projects_ids = assigns(:rule).projects.map { |project| project.id }
+      new_rule = AutoUpdateRule.last
+      new_rule_projects_ids = assigns(:rule).projects.map(&:id)
 
-        expect(new_rule.author_id).not_to eq(rule_to_copy.author_id)
-        expect(new_rule_projects_ids).to eq(rule_to_copy_projects_ids)
-
+      expect(new_rule.author_id).not_to eq(rule_to_copy.author_id)
+      expect(new_rule_projects_ids).to eq(rule_to_copy.project_ids)
     end
   end
 end

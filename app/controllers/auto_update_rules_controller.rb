@@ -25,13 +25,13 @@ class AutoUpdateRulesController < ApplicationController
   end
 
   def new
-    if copy?(request)
-      @rule_to_copy = AutoUpdateRule.find(params[:id])
-      @rule = @rule_to_copy.copy
-    else
-      @rule = AutoUpdateRule.new
-    end
+    @rule = AutoUpdateRule.new
+  end
 
+  def copy
+    @rule_to_copy = AutoUpdateRule.find(params[:id])
+    @rule = @rule_to_copy.copy
+    render :new
   end
 
   def create
@@ -47,9 +47,7 @@ class AutoUpdateRulesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html {
-          redirect_to request.referrer
-        }
+        format.html { render :action => :new }
       end
     end
   end
@@ -105,7 +103,4 @@ class AutoUpdateRulesController < ApplicationController
     end
   end
 
-  def copy?(request)
-    request.path_info.include?('copy')
-  end
 end
