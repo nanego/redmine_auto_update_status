@@ -34,3 +34,5 @@ en:
   hint_based_on_issue_updated_at_field: Based on issue updated-at timestamp
   label_a_member: "A member"
   label_a_functional_role: "A functional role"
+  label_copy_extension_auto_update_rule: "copy"
+

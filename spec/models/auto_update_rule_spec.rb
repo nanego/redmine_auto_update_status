@@ -8,6 +8,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
   let!(:rule) { AutoUpdateRule.find(1) }
   let!(:rule_without_final_status) { AutoUpdateRule.find(2) }
   let!(:rule_with_new_priority) { AutoUpdateRule.find(3) }
+  let!(:rule_to_copy) { AutoUpdateRule.find(4) }
   let!(:issue_7) { Issue.find(7) }
 
   context "attributes" do
@@ -183,5 +184,25 @@ RSpec.describe AutoUpdateRule, :type => :model do
     expect {
       rule_without_final_status.apply_to_issue(issue_7)
     }.to_not change(Journal, :count)
+  end
+
+  context "copy" do
+    it "copy a rule" do
+      new_rule = rule_to_copy.copy
+      expect(new_rule).to have_attributes(:initial_status_ids => rule_to_copy.initial_status_ids,
+                                          :final_status_id => rule_to_copy.final_status_id,
+                                          :time_limit => rule_to_copy.time_limit,
+                                          :note => rule_to_copy.note,
+                                          :project_id => rule_to_copy.project_id,
+                                          :enabled => rule_to_copy.enabled,
+                                          :organization_ids => rule_to_copy.organization_ids,
+                                          :tracker_ids => rule_to_copy.tracker_ids,
+                                          :update_issue_timestamp => rule_to_copy.update_issue_timestamp,
+                                          :assignment => rule_to_copy.assignment,
+                                          :final_priority => rule_to_copy.final_priority)
+      expect(new_rule.id).to_not eq rule_to_copy.id
+      expect(new_rule.author_id).to_not eq rule_to_copy.author_id
+      expect(new_rule.name).to_not eq rule_to_copy.name
+    end
   end
 end

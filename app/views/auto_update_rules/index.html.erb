@@ -52,6 +52,7 @@
           <td><%= l 'time_in_days', days: rule.time_limit %></td>
 
           <td class="buttons">
+            <%= link_to l(:button_copy), copy_auto_update_rule_path(id: rule.id), :class => 'icon icon-copy' %>
             <%= link_to l(:button_edit), edit_auto_update_rule_path(id: rule.id), :class => 'icon icon-edit' %>
             <%= delete_link auto_update_rule_path(rule) %>
           </td>
