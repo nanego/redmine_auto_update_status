@@ -29,7 +29,7 @@
   <span class="value"><%= l 'time_in_days', days: @rule.time_limit %></span><br/>
 
   <span class="label"><%= l(:field_include_weekends) %></span> :
-  <span class="value"><%= @rule.include_weekends ? l(:label_yes) : l(:label_no) %></span><br/>
+  <span class="value"><%= @rule.include_weekends ? l(:general_text_Yes) : l(:general_text_No) %></span><br/>
 
   <% if @rule.projects.present? %>
     <span class="label"><%= l(:label_project_plural) %></span> :
