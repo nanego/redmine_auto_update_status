@@ -192,6 +192,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(new_rule).to have_attributes(:initial_status_ids => rule_to_copy.initial_status_ids,
                                           :final_status_id => rule_to_copy.final_status_id,
                                           :time_limit => rule_to_copy.time_limit,
+                                          :include_weekends => rule_to_copy.include_weekends,
                                           :note => rule_to_copy.note,
                                           :project_id => rule_to_copy.project_id,
                                           :enabled => rule_to_copy.enabled,
@@ -203,6 +204,24 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(new_rule.id).to_not eq rule_to_copy.id
       expect(new_rule.author_id).to_not eq rule_to_copy.author_id
       expect(new_rule.name).to_not eq rule_to_copy.name
+    end
+  end
+
+  context "limit_date_without_working_days" do
+    it "returns a Friday if today is a Monday and the delay is 1 day" do
+      expect(rule.limit_date_without_working_days(delay: 1, date: Date.parse("2022-06-20"))).to eq Date.parse("2022-06-17")
+    end
+
+    it "returns a Thursday if today is a Sunday and the delay is 2 days" do
+      expect(rule.limit_date_without_working_days(delay: 2, date: Date.parse("2022-06-19"))).to eq Date.parse("2022-06-16")
+    end
+
+    it "returns a Wednesday if today is a Saturday and the delay is 3 days" do
+      expect(rule.limit_date_without_working_days(delay: 3, date: Date.parse("2022-06-18"))).to eq Date.parse("2022-06-15")
+    end
+
+    it "returns a Tuesday if today is a Monday and the delay is 10 days" do
+      expect(rule.limit_date_without_working_days(delay: 10, date: Date.parse("2022-06-20"))).to eq Date.parse("2022-06-06")
     end
   end
 end

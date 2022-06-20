@@ -16,6 +16,7 @@ fr:
   show_auto_update_rule_results: "%{issues_count} demandes correspondent"
   field_time_limit: "Délai d'inactivité"
   field_time_limit_in_days: "Délai d'inactivité avant changement (en jours)"
+  field_include_weekends: "Inclure les week-ends"
   issues_total_count: "Nombre total de demandes"
   apply_change: "Appliquer"
   label_apply_to_all: "Appliquer à toutes les demandes"

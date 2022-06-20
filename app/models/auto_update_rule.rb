@@ -7,7 +7,8 @@ class AutoUpdateRule < ActiveRecord::Base
   serialize :organization_ids
 
   safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids",
-                  "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment", "final_priority"
+                  "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment",
+                  "final_priority", "include_weekends"
 
   validates_presence_of :author_id
 
@@ -25,7 +26,7 @@ class AutoUpdateRule < ActiveRecord::Base
     issues_to_change = Issue.joins(:project).where('projects.status = ?', Project::STATUS_ACTIVE).order(updated_on: :desc)
 
     issues_to_change = issues_to_change.where(status_id: initial_statuses) if initial_statuses
-    issues_to_change = issues_to_change.where("issues.updated_on < ?", time_limit.days.ago) if time_limit
+    issues_to_change = issues_to_change.where("issues.updated_on < ?", limit_date(delay: time_limit, include_weekends: include_weekends)) if time_limit
     issues_to_change = issues_to_change.where(project: projects) if projects.present?
     issues_to_change = issues_to_change.where(tracker_id: tracker_ids.reject(&:blank?)) if tracker_ids.present? && tracker_ids.reject(&:blank?).present?
 
@@ -37,6 +38,24 @@ class AutoUpdateRule < ActiveRecord::Base
     issues_to_change = issues_with_assignment(assignment, issues_to_change) if assignment.present?
 
     issues_to_change
+  end
+
+  def limit_date(delay: 0, include_weekends: true)
+    if include_weekends
+      delay.days.ago
+    else
+      limit_date_without_working_days(delay: delay)
+    end
+  end
+
+  def limit_date_without_working_days(delay: 0, date: Date.today)
+    delay.times.inject(date) do |date|
+      case date.wday
+      when 1 then date - 3
+      when 0 then date - 2
+      else date - 1
+      end
+    end
   end
 
   def apply_to_all_issues

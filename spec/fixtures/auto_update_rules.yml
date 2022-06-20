@@ -3,6 +3,7 @@ one:
   initial_status_ids: [1, 2]
   final_status_id: 5
   time_limit: 5
+  include_weekends: true
   note: Automatically closed
   author_id: 1
   enabled: true
@@ -14,6 +15,7 @@ two:
   id: 2
   initial_status_ids: [1, 2]
   time_limit: 5
+  include_weekends: true
   note: Note added automatically
   author_id: 1
   enabled: true
@@ -27,6 +29,7 @@ three:
   final_status_id:
   final_priority: higher
   time_limit: 5
+  include_weekends: true
   note: Priority changed automatically
   author_id: 1
   enabled: true
@@ -34,11 +37,11 @@ three:
   tracker_ids:
   name: Rule with higher priority
   update_issue_timestamp: true
-
 four:
   id: 4
   initial_status_ids: [1, 2]
   time_limit: 7
+  include_weekends: false
   note: Automatically closed
   author_id: 2
   enabled: true

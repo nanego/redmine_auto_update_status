@@ -41,6 +41,10 @@
           </p>
 
           <p>
+            <%= f.check_box :include_weekends, {label: l(:field_include_weekends)} %>
+          </p>
+
+          <p>
             <%= f.check_box :update_issue_timestamp, { label: l(:label_update_issue_timestamp) } %>
             <span><i><%= l('hint_only_when_status_is_not_updated') %></i></span>
           </p>

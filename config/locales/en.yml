@@ -16,6 +16,7 @@ en:
   show_auto_update_rule_results: "%{issues_count} issues match this rule"
   field_time_limit: "Idle time"
   field_time_limit_in_days: "Idle time before update (in days)"
+  field_include_weekends: "Include weekends"
   issues_total_count: "Total count of issues"
   apply_change: "Apply"
   label_apply_to_all: "Apply to all issues"
