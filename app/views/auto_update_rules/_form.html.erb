@@ -12,7 +12,7 @@
           <p><%= f.text_field :name, { label: l(:field_name), required: false, size: 80 } %></p>
 
           <fieldset>
-            <legend><%= l(:label_filters) %></legend>
+            <legend><%= l(:label_filter_plural) %></legend>
             <p><%= f.select :initial_status_ids,
                             options_for_select(IssueStatus.sorted.map { |s| [s.name, s.id] }, @rule.initial_status_ids),
                             { label: l(:field_initial_status_plural) },
