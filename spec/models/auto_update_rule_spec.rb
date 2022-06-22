@@ -2,14 +2,19 @@ require 'spec_helper'
 
 RSpec.describe AutoUpdateRule, :type => :model do
 
-  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations, :users
-  fixtures :functions if Redmine::Plugin.installed?(:redmine_limited_visibility)
+  fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations,
+           :users, :journals, :journal_details, :members, :member_roles, :roles
+  fixtures :functions, :project_functions, :project_function_trackers if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   let!(:rule) { AutoUpdateRule.find(1) }
   let!(:rule_without_final_status) { AutoUpdateRule.find(2) }
   let!(:rule_with_new_priority) { AutoUpdateRule.find(3) }
   let!(:rule_to_copy) { AutoUpdateRule.find(4) }
   let!(:issue_7) { Issue.find(7) }
+
+  before do
+    User.current = User.find(1)
+  end
 
   context "attributes" do
 
@@ -67,10 +72,12 @@ RSpec.describe AutoUpdateRule, :type => :model do
       it "returns the issues assigned to a functional-role" do
         function = Function.all.first
         issue_2 = Issue.find(2)
-        issue_2.update(assigned_function: function, assigned_to: nil)
+        issue_2.update_attribute(:assigned_to_id, nil)
+        issue_2.update_attribute(:assigned_to_function_id, function.id)
         expect(issue_2.reload.assigned_function).to eq function
         expect(issue_2.reload.assigned_to).to be_nil
-        rule.update(assignment: "a_functional_role", time_limit: nil)
+
+        expect(rule.update(assignment: "a_functional_role", time_limit: nil)).to be_truthy
 
         expect(rule.issues.size).to be >= 1
         expect(rule.issues).to include issue_2
@@ -129,7 +136,8 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       expect(rule.issues).to_not include issue_7
       expect(issue_7.status_id).to eq 1
-      expect(issue_7.last_notes).to eq "Automatically closed"
+      last_note = issue_7.journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
+      expect(last_note).to eq "Automatically closed"
     end
 
     it "can apply a rule without final status" do
@@ -149,7 +157,8 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       expect(rule_without_final_status.issues).to include issue_7
       expect(issue_7.status_id).to eq 1
-      expect(issue_7.last_notes).to eq "Note added automatically"
+      last_note = issue_7.journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
+      expect(last_note).to eq "Note added automatically"
       expect(issue_7.updated_on).to eq initial_timestamp
 
       # Re-applying the same rule does NOT add the same notes multiple times
@@ -177,7 +186,9 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
     expect(rule_without_final_status.issues).to_not include issue_7 #Issue has now been removed from rule.issues
     expect(issue_7.status_id).to eq 1
-    expect(issue_7.last_notes).to eq "Note added automatically"
+    expect(issue_7.journals).to_not be_empty
+    last_note = issue_7.journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
+    expect(last_note).to eq "Note added automatically"
     expect(issue_7.updated_on).to_not eq initial_timestamp
 
     # Re-applying the same rule does NOT add the same notes multiple times
