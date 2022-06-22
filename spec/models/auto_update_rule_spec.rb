@@ -129,15 +129,14 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       expect(rule.issues).to include issue_7
       expect(issue_7.status_id).to eq 1
-      expect(issue_7.last_notes).to eq nil
+      expect(issue_7.last_saved_note).to eq nil
 
       rule.apply_to_issue(issue_7)
       issue_7.reload
 
       expect(rule.issues).to_not include issue_7
       expect(issue_7.status_id).to eq 1
-      last_note = issue_7.journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
-      expect(last_note).to eq "Automatically closed"
+      expect(issue_7.last_saved_note).to eq "Automatically closed"
     end
 
     it "can apply a rule without final status" do
@@ -147,7 +146,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(rule_without_final_status.final_status_id).to be_nil
       expect(rule_without_final_status.issues).to include issue_7
       expect(issue_7.status_id).to eq 1
-      expect(issue_7.last_notes).to eq nil
+      expect(issue_7.last_saved_note).to eq nil
 
       # Apply rule
       rule_without_final_status.apply_to_issue(issue_7)
@@ -157,8 +156,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       expect(rule_without_final_status.issues).to include issue_7
       expect(issue_7.status_id).to eq 1
-      last_note = issue_7.journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
-      expect(last_note).to eq "Note added automatically"
+      expect(issue_7.last_saved_note).to eq "Note added automatically"
       expect(issue_7.updated_on).to eq initial_timestamp
 
       # Re-applying the same rule does NOT add the same notes multiple times
@@ -176,7 +174,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
     expect(rule_without_final_status.final_status_id).to be_nil
     expect(rule_without_final_status.issues).to include issue_7
     expect(issue_7.status_id).to eq 1
-    expect(issue_7.last_notes).to eq nil
+    expect(issue_7.last_saved_note).to eq nil
 
     # Apply rule
     rule_without_final_status.apply_to_issue(issue_7)
@@ -187,8 +185,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
     expect(rule_without_final_status.issues).to_not include issue_7 #Issue has now been removed from rule.issues
     expect(issue_7.status_id).to eq 1
     expect(issue_7.journals).to_not be_empty
-    last_note = issue_7.journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
-    expect(last_note).to eq "Note added automatically"
+    expect(issue_7.last_saved_note).to eq "Note added automatically"
     expect(issue_7.updated_on).to_not eq initial_timestamp
 
     # Re-applying the same rule does NOT add the same notes multiple times

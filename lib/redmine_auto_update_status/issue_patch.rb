@@ -2,14 +2,17 @@ module RedmineAutoUpdateStatus
   module IssuePatch
 
     def add_notes(notes:, user:)
-      last_note = journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
-      if last_note != notes
+      if last_saved_note != notes
         Journal.create(:journalized => self, :user => user, :notes => notes)
       end
     end
 
+    def last_saved_note
+      journals.where.not(notes: '').reorder(:id => :desc).first.try(:notes)
+    end
+
     def add_notes_and_update_issue(notes:, user:)
-      if last_notes != notes
+      if last_saved_note != notes
         init_journal(user, notes)
       end
       save
