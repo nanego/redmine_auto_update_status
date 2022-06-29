@@ -13,7 +13,7 @@ class AutoUpdateRule < ActiveRecord::Base
   validates_presence_of :author_id
 
   belongs_to :project # TODO Remove this association later, after migration
-  has_many :auto_update_rule_projects
+  has_many :auto_update_rule_projects, :dependent => :destroy
   has_many :projects, through: :auto_update_rule_projects
   belongs_to :author, class_name: 'User', foreign_key: :author_id
 
