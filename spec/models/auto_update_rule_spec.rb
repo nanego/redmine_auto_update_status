@@ -232,4 +232,23 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(rule.limit_date_without_working_days(delay: 10, date: Date.parse("2022-06-20"))).to eq Date.parse("2022-06-06")
     end
   end
+
+  context "Update auto_update_rule_projects table in case of cascade deleting" do
+    let(:project) { Project.last }
+    before do
+      AutoUpdateRuleProject.create(project: project, auto_update_rule: rule)
+    end
+
+    it "When delete a rule" do
+      expect do
+        rule.destroy
+      end.to change { AutoUpdateRuleProject.count }.by(-1)
+    end
+
+    it "When delete a project" do
+      expect do
+        project.destroy
+      end.to change { AutoUpdateRuleProject.count }.by(-1)
+    end
+  end
 end
