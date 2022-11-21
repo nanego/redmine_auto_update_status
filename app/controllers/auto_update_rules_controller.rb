@@ -98,7 +98,11 @@ class AutoUpdateRulesController < ApplicationController
     respond_to do |format|
       format.html {
         flash[:notice] = l(:notice_auto_update_rule_successfully_applied)
-        redirect_to(:back)
+        if url_for(:back)
+          redirect_to(:back)
+        else
+          redirect_to auto_update_rule_path(@rule)
+        end
       }
     end
   end

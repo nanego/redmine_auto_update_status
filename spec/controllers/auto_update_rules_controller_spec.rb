@@ -4,7 +4,9 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
 
   render_views
 
-  fixtures :users, :auto_update_rules, :projects
+  fixtures :users, :auto_update_rules, :projects, :issues, :trackers, :issue_statuses, :enumerations,
+           :journals, :journal_details, :members, :member_roles, :roles
+  fixtures :functions, :project_functions, :project_function_trackers if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   before do
     User.current = User.find(1)
@@ -84,5 +86,37 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
       expect(new_rule.author_id).not_to eq(rule_to_copy.author_id)
       expect(new_rule_projects_ids).to eq(rule_to_copy.project_ids)
     end
+  end
+
+  describe "Applying a rule manually" do
+
+    let!(:rule) { AutoUpdateRule.find(1) }
+    let!(:issue) { Issue.find(7) }
+
+    it "applies a rule to a specific issue and change its status" do
+
+      expect(rule.issues.count).to be > 0
+      expect(rule.issues).to include(issue)
+      expect(issue.status_id).to eq(1)
+
+      expect do
+        post :apply, :params => {
+          :id => rule.id,
+          :issue_id => issue.id
+        }
+      end.to change { issue.journals.count }.by(1)
+
+      expect(response).to redirect_to(auto_update_rule_path(rule))
+      expect(issue.reload.status_id).to eq(5)
+
+      last_journal = issue.journals.last
+      expect(last_journal.notes).to eq(rule.note)
+      expect(last_journal.details).not_to be_empty
+      journal_detail = last_journal.details.first
+      expect(journal_detail.prop_key).to eq "status_id"
+      expect(journal_detail.value).to eq "5"
+
+    end
+
   end
 end
