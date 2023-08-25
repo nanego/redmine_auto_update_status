@@ -45,3 +45,5 @@ module RedmineAutoUpdateStatus
 
   end
 end
+
+Issue.prepend RedmineAutoUpdateStatus::IssuePatch
