@@ -13,6 +13,23 @@ Then :
 * clone this repository in your "plugins/" directory
 * restart your Redmine instance (depends on how you host it)
 
+### Usage
+
+To apply the rules manually, utilize the link: 'Apply to all issues.'
+
+However, for automated status updates, it is necessary to create a script and run it periodically, such as once a day, using cron.
+
+Below is an example of the script:
+
+```bash
+#!/bin/bash
+
+echo "Start applying rules on Redmine issues: " $(date)
+source /usr/local/rvm/scripts/rvm
+cd /PATH-TO/redmine
+bundle exec rails redmine:auto_update_status:apply_rules RAILS_ENV=production
+```
+
 ## Test status
 
 |Plugin branch| Redmine Version | Test Status       |
