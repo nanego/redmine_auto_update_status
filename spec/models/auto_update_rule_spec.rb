@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe AutoUpdateRule, :type => :model do
 
   fixtures :auto_update_rules, :issues, :trackers, :issue_statuses, :projects, :enumerations,
-           :users, :journals, :journal_details, :members, :member_roles, :roles
+           :users, :journals, :journal_details, :members, :member_roles, :roles, :attachments
   fixtures :functions, :project_functions, :project_function_trackers if Redmine::Plugin.installed?(:redmine_limited_visibility)
 
   let!(:rule) { AutoUpdateRule.find(1) }
@@ -11,6 +11,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
   let!(:rule_with_new_priority) { AutoUpdateRule.find(3) }
   let!(:rule_to_copy) { AutoUpdateRule.find(4) }
   let!(:issue_7) { Issue.find(7) }
+  let!(:issue_14) { Issue.find(14) }
 
   before do
     User.current = User.find(1)
@@ -192,6 +193,31 @@ RSpec.describe AutoUpdateRule, :type => :model do
     expect {
       rule_without_final_status.apply_to_issue(issue_7)
     }.to_not change(Journal, :count)
+  end
+
+  describe "rules that delete data" do
+    it "can delete the target issue if the rule says so" do
+      rule.update(delete_issue: true)
+
+      expect(rule.issues).to include issue_7
+
+      rule.apply_to_issue(issue_7)
+
+      expect(issue_7).to be_destroyed
+      expect(rule.issues).to_not include issue_7
+    end
+
+    it "can delete the attached files of issues if the rule says so" do
+      rule.update(delete_all_attachments: true)
+
+      expect(rule.issues).to include issue_14
+      expect(issue_14.attachments).to_not be_empty
+
+      rule.apply_to_issue(issue_14)
+      issue_14.reload
+
+      expect(issue_14.attachments).to be_empty
+    end
   end
 
   context "copy" do

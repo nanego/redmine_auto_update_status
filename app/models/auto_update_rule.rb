@@ -8,7 +8,7 @@ class AutoUpdateRule < ActiveRecord::Base
 
   safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids",
                   "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment",
-                  "final_priority", "include_weekends"
+                  "final_priority", "include_weekends", "delete_issue", "delete_all_attachments"
 
   validates_presence_of :author_id
 

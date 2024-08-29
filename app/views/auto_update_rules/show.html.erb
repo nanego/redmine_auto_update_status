@@ -11,19 +11,10 @@
   <span class="label"><%= l(:field_name) %></span> :
   <span class="value"><%= @rule.name %></span><br/>
 
-  <span class="label"><%= l(:field_initial_status_plural) %></span> :
-  <span class="value"><%= @initial_statuses.join(" #{l 'conditional_or'} ") %></span><br/>
-
-  <span class="label"><%= l(:field_final_status) %></span> :
-  <span class="value"><%= @final_status %></span><br/>
-
-  <span class="label"><%= l(:field_final_priority) %></span> :
-  <span class="value"><%= final_priority_value(@rule.final_priority) %></span><br/>
-
   <br>
 
-  <span class="label"><%= l(:label_auto_update_note) %></span> :
-  <span class="value"><%= @rule.note.truncate(40) %></span><br/>
+  <span class="label"><%= l(:field_initial_status_plural) %></span> :
+  <span class="value"><%= @initial_statuses.join(" #{l 'conditional_or'} ") %></span><br/>
 
   <span class="label"><%= l(:field_time_limit) %></span> :
   <span class="value"><%= l 'time_in_days', days: @rule.time_limit %></span><br/>
@@ -45,6 +36,25 @@
     <span class="label"><%= l(:field_issues_assigned_to) %></span> :
     <span class="value"><%= Organization.where(id: @rule.organization_ids).join(" #{l 'conditional_or'} ") %></span><br/>
   <% end %>
+
+  <br>
+
+  <span class="label"><%= l(:field_final_status) %></span> :
+  <span class="value"><%= @final_status %></span><br/>
+
+  <span class="label"><%= l(:field_final_priority) %></span> :
+  <span class="value"><%= final_priority_value(@rule.final_priority) %></span><br/>
+
+  <span class="label"><%= l(:label_auto_update_note) %></span> :
+  <span class="value"><%= @rule.note.truncate(40) %></span><br/>
+
+  <br>
+
+  <span class="label"><%= l(:label_delete_all_attachments) %></span> :
+  <span class="value"><%= @rule.delete_all_attachments ? l(:general_text_Yes) : l(:general_text_No) %></span><br/>
+
+  <span class="label"><%= l(:label_delete_issue) %></span> :
+  <span class="value"><%= @rule.delete_issue ? l(:general_text_Yes) : l(:general_text_No) %></span><br/>
 
   <br/>
 
@@ -96,4 +106,3 @@
   </tbody>
 </table>
 <span class="pagination"><%= pagination_links_full @issues_to_change_pages, @issues_to_change_count %></span>
-

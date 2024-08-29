@@ -38,3 +38,7 @@ fr:
   label_higher_priority: ">> Priorité supérieure"
   label_lower_priority: "<< Priorité inférieure"
   label_copy_extension_auto_update_rule: "copie"
+  label_deletion_plural: "Suppression de données"
+  label_delete_issue: "Supprimer la demande"
+  label_delete_all_attachments: "Supprimer toutes les pièces jointes"
+  label_modifications: "Modifications à apporter"
