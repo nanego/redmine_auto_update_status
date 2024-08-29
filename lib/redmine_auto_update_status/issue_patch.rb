@@ -28,10 +28,10 @@ module RedmineAutoUpdateStatus
     def auto_update_by_rule(rule)
 
       return destroy if rule.delete_issue?
-      return attachments.each(&:destroy) if rule.delete_all_attachments?
 
       new_status = IssueStatus.find(rule.final_status_id) if rule.final_status_id.present?
       new_priority = rule.next_priority_for(issue: self) if rule.final_priority.present?
+      attachments.each(&:destroy) if rule.delete_all_attachments?
       if new_status || new_priority
         changes = {}
         changes["status_id"] = [status_id, new_status.id] if new_status
