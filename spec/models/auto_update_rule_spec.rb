@@ -183,7 +183,7 @@ RSpec.describe AutoUpdateRule, :type => :model do
     # Result
     issue_7.reload
 
-    expect(rule_without_final_status.issues).to_not include issue_7 #Issue has now been removed from rule.issues
+    expect(rule_without_final_status.issues).to_not include issue_7 # Issue has now been removed from rule.issues
     expect(issue_7.status_id).to eq 1
     expect(issue_7.journals).to_not be_empty
     expect(issue_7.last_saved_note).to eq "Note added automatically"
@@ -201,7 +201,9 @@ RSpec.describe AutoUpdateRule, :type => :model do
 
       expect(rule.issues).to include issue_7
 
-      rule.apply_to_issue(issue_7)
+      expect {
+        rule.apply_to_issue(issue_7)
+      }.to change(Issue, :count).by(-1)
 
       expect(issue_7).to be_destroyed
       expect(rule.issues).to_not include issue_7
