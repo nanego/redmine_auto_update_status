@@ -36,4 +36,8 @@ en:
   label_a_member: "A member"
   label_a_functional_role: "A functional role"
   label_copy_extension_auto_update_rule: "copy"
+  label_deletion_plural: "Data deletion"
+  label_delete_issue: "Delete issue"
+  label_delete_all_attachments: "Delete all attachments"
+  label_modifications: "Modifications to be made"
 
