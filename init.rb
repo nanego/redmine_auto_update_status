@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'redmine'
 require_relative 'lib/redmine_auto_update_status/hooks'
 
 Redmine::Plugin.register :redmine_auto_update_status do

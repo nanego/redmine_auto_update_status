@@ -1,3 +1,5 @@
+require_dependency 'issue'
+
 module RedmineAutoUpdateStatus
   module IssuePatch
 
