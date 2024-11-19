@@ -1,4 +1,4 @@
-class AutoUpdateRule < ActiveRecord::Base
+class AutoUpdateRule < ApplicationRecord
 
   include Redmine::SafeAttributes
 

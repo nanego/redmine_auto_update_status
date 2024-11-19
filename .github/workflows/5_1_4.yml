@@ -1,8 +1,8 @@
-name: Tests 5.1.3
+name: Tests 5.1.4
 
 env:
   PLUGIN_NAME: redmine_auto_update_status
-  REDMINE_VERSION: 5.1.3
+  REDMINE_VERSION: 5.1.4
   RAILS_ENV: test
 
 on:

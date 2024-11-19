@@ -14,3 +14,10 @@ Redmine::Plugin.register :redmine_auto_update_status do
        :caption => :label_auto_update_status,
        :html => {:class => 'icon'}
 end
+
+# Support for Redmine 5
+if Redmine::VERSION::MAJOR < 6
+  class ApplicationRecord < ActiveRecord::Base
+    self.abstract_class = true
+  end
+end
