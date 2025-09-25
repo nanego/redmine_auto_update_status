@@ -10,9 +10,14 @@ Redmine::Plugin.register :redmine_auto_update_status do
   version '1.0.0'
   url 'https://github.com/nanego/redmine_auto_update_status'
   author_url 'https://github.com/nanego/redmine_auto_update_status'
-  menu :admin_menu, :auto_update_rules, { :controller => 'auto_update_rules', :action => 'index' },
-       :caption => :label_auto_update_status,
-       :html => {:class => 'icon'}
+end
+
+# Ensure routes are loaded before adding the menu item
+Rails.application.config.after_initialize do
+  Redmine::Plugin.find(:redmine_auto_update_status).menu :admin_menu, :auto_update_rules,
+                                                         { :controller => 'auto_update_rules', :action => 'index' },
+                                                         :caption => :label_auto_update_status,
+                                                         :html => { :class => 'icon' }
 end
 
 # Support for Redmine 5
