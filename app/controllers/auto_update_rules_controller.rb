@@ -79,7 +79,7 @@ class AutoUpdateRulesController < ApplicationController
     respond_to do |format|
       format.html {
         flash[:notice] = l(:notice_auto_update_rule_successfully_deleted)
-        redirect_to(:back)
+        redirect_back(fallback_location: auto_update_rules_path)
       }
     end
   end
@@ -98,11 +98,7 @@ class AutoUpdateRulesController < ApplicationController
     respond_to do |format|
       format.html {
         flash[:notice] = l(:notice_auto_update_rule_successfully_applied)
-        if url_for(:back)
-          redirect_to(:back)
-        else
-          redirect_to auto_update_rule_path(@rule)
-        end
+        redirect_back(fallback_location: auto_update_rule_path(@rule))
       }
     end
   end

@@ -29,7 +29,7 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
     it "redirects to auto update rules page" do
       params = { auto_update_rule: { note: "This is a note", final_status_id: 5, author_id: 1 } } # Closed by Admin
       post :create, params: params
-      expect(response).to redirect_to(auto_update_rules_path)
+      expect(response).to redirect_to(auto_update_rule_path(AutoUpdateRule.last))
     end
 
   end
@@ -61,7 +61,7 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
       end.to change { AutoUpdateRule.count }.by(1)
       auto_rule = AutoUpdateRule.last
 
-      expect(response).to redirect_to(auto_update_rules_path)
+      expect(response).to redirect_to(auto_update_rule_path(auto_rule))
       expect(auto_rule.author_id).not_to eq(rule_to_copy.author_id)
       expect(auto_rule.name).to eq('Title of copy')
       expect(auto_rule.name).to_not eq(rule_to_copy.name)
@@ -78,7 +78,7 @@ RSpec.describe AutoUpdateRulesController, :type => :controller do
       end.to change { AutoUpdateRule.count }.by(1)
                                             .and change { AutoUpdateRuleProject.count }.by(2)
 
-      expect(response).to redirect_to(auto_update_rules_path)
+      expect(response).to redirect_to(auto_update_rule_path(AutoUpdateRule.last))
 
       new_rule = AutoUpdateRule.last
       new_rule_projects_ids = assigns(:rule).projects.map(&:id)
