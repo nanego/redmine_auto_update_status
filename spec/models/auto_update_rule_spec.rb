@@ -85,6 +85,33 @@ RSpec.describe AutoUpdateRule, :type => :model do
       end
     end
 
+    it "returns only issues with attachments when has_attachments is '1'" do
+      rule.has_attachments = "1"
+      issues = rule.issues
+      expect(issues).to include issue_14
+      expect(issues).to_not include issue_7
+      issues.each do |issue|
+        expect(issue.attachments).to_not be_empty
+      end
+    end
+
+    it "returns only issues without attachments when has_attachments is '0'" do
+      rule.has_attachments = "0"
+      issues = rule.issues
+      expect(issues).to include issue_7
+      expect(issues).to_not include issue_14
+      issues.each do |issue|
+        expect(issue.attachments).to be_empty
+      end
+    end
+
+    it "returns all issues when has_attachments is blank" do
+      rule.has_attachments = ""
+      issues = rule.issues
+      expect(issues).to include issue_7
+      expect(issues).to include issue_14
+    end
+
   end
 
   context "apply rules" do

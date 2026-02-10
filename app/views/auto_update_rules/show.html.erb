@@ -32,6 +32,11 @@
     <span class="value"><%= Tracker.where(id: @rule.tracker_ids).join(" #{l 'conditional_or'} ") %></span><br/>
   <% end %>
 
+  <% if @rule.has_attachments.present? %>
+    <span class="label"><%= l(:field_has_attachments) %></span> :
+    <span class="value"><%= @rule.has_attachments == "1" ? l(:label_has_attachments_yes) : l(:label_has_attachments_no) %></span><br/>
+  <% end %>
+
   <% if Redmine::Plugin.installed?(:redmine_organizations) && @rule.organization_ids && @rule.organization_ids.reject(&:blank?).present? %>
     <span class="label"><%= l(:field_issues_assigned_to) %></span> :
     <span class="value"><%= Organization.where(id: @rule.organization_ids).join(" #{l 'conditional_or'} ") %></span><br/>

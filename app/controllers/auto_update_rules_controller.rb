@@ -42,7 +42,7 @@ class AutoUpdateRulesController < ApplicationController
       respond_to do |format|
         format.html {
           flash[:notice] = l(:notice_auto_update_rule_successfully_created)
-          redirect_to auto_update_rules_path
+          redirect_to auto_update_rule_path(@rule)
         }
       end
     else
@@ -63,7 +63,7 @@ class AutoUpdateRulesController < ApplicationController
       respond_to do |format|
         format.html {
           flash[:notice] = l(:notice_auto_update_rule_successfully_updated)
-          redirect_to auto_update_rules_path
+          redirect_to auto_update_rule_path(@rule)
         }
       end
     else

@@ -8,7 +8,7 @@ class AutoUpdateRule < ApplicationRecord
 
   safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids",
                   "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment",
-                  "final_priority", "include_weekends", "delete_issue", "delete_all_attachments"
+                  "final_priority", "include_weekends", "delete_issue", "delete_all_attachments", "has_attachments"
 
   validates_presence_of :author_id
 
@@ -36,6 +36,12 @@ class AutoUpdateRule < ApplicationRecord
     end
 
     issues_to_change = issues_with_assignment(assignment, issues_to_change) if assignment.present?
+
+    if has_attachments == "1"
+      issues_to_change = issues_to_change.where("issues.id IN (SELECT container_id FROM attachments WHERE container_type = 'Issue')")
+    elsif has_attachments == "0"
+      issues_to_change = issues_to_change.where("issues.id NOT IN (SELECT container_id FROM attachments WHERE container_type = 'Issue')")
+    end
 
     issues_to_change
   end

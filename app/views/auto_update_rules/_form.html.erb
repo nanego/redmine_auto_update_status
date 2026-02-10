@@ -62,6 +62,12 @@
                            { label: l(:field_assigned_to), include_blank: true } %>
             </p>
 
+            <p>
+              <%= f.select :has_attachments,
+                           options_for_select([[l(:label_has_attachments_yes), "1"], [l(:label_has_attachments_no), "0"]], @rule.has_attachments),
+                           { label: l(:field_has_attachments), include_blank: true } %>
+            </p>
+
             <% if Redmine::Plugin.installed?(:redmine_organizations) %>
               <p>
                 <%= f.select :organization_ids,

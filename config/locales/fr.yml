@@ -41,4 +41,7 @@ fr:
   label_deletion_plural: "Suppression de données"
   label_delete_issue: "Supprimer la demande"
   label_delete_all_attachments: "Supprimer toutes les pièces jointes"
+  field_has_attachments: "Pièces jointes"
+  label_has_attachments_yes: "Avec pièces jointes"
+  label_has_attachments_no: "Sans pièces jointes"
   label_modifications: "Modifications à apporter"

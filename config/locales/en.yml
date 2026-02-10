@@ -39,5 +39,8 @@ en:
   label_deletion_plural: "Data deletion"
   label_delete_issue: "Delete issue"
   label_delete_all_attachments: "Delete all attachments"
+  field_has_attachments: "Attachments"
+  label_has_attachments_yes: "With attachments"
+  label_has_attachments_no: "Without attachments"
   label_modifications: "Modifications to be made"
 
