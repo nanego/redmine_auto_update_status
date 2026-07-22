@@ -64,7 +64,7 @@
   <br/>
 
   <span class="label"><%= l(:label_automatic_daily_run) %></span> :
-  <span class="value <%= @rule.enabled ? 'icon icon-ok' : 'icon icon-not-ok' %>" style="margin-left: 10px;"></span><br/>
+  <span class="value <%= @rule.enabled ? 'icon icon-ok' : 'icon icon-error' %>" style="margin-left: 10px;"><%= @rule.enabled ? sprite_icon('checked') : sprite_icon('close') %></span><br/>
 
   <span class="label"><%= l(:field_update_author) %></span> :
   <span class="value"><%= link_to_user @rule.author %></span><br/>

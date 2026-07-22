@@ -3,7 +3,7 @@
 <div class="contextual">
   <%= link_to(sprite_icon('add', l(:label_new_auto_update_rule)),
               {:controller => 'auto_update_rules', :action => 'new'},
-              :class => 'icon icon-add', :method => :get) %>
+              :method => :get) %>
 </div>
 
 <h2><span class="icon icon-auto-update-status"><%= h "#{l(:label_auto_update_rules)}" %></span></h2>
@@ -45,7 +45,7 @@
             <%= rule.enabled ? sprite_icon('checked', l(:general_text_Yes), icon_only: true) : sprite_icon('close', l(:general_text_No), icon_only: true) %>
           </td>
           <td><%= link_to rule.name, auto_update_rule_path(rule) %></td>
-          <td style="text-align: left;"><%= link_to sprite_icon('issue', l("show_auto_update_rule_results", issues_count: rule.issues.count)), auto_update_rule_path(rule), :class => 'icon icon-issue' %></td>
+          <td style="text-align: left;"><%= link_to sprite_icon('issue', l("show_auto_update_rule_results", issues_count: rule.issues.count)), auto_update_rule_path(rule) %></td>
           <td><%= h(initial_statuses) %></td>
           <td><%= h(final_status) %></td>
           <td><%= final_priority_value(rule.final_priority) %></td>
@@ -54,8 +54,8 @@
           <td><%= l 'time_in_days', days: rule.time_limit %></td>
 
           <td class="buttons">
-            <%= link_to sprite_icon('copy', l(:button_copy)), copy_auto_update_rule_path(id: rule.id), :class => 'icon icon-copy' %>
-            <%= link_to sprite_icon('edit', l(:button_edit)), edit_auto_update_rule_path(id: rule.id), :class => 'icon icon-edit' %>
+            <%= link_to sprite_icon('copy', l(:button_copy)), copy_auto_update_rule_path(id: rule.id) %>
+            <%= link_to sprite_icon('edit', l(:button_edit)), edit_auto_update_rule_path(id: rule.id) %>
             <%= delete_link auto_update_rule_path(rule) %>
           </td>
         </tr>
