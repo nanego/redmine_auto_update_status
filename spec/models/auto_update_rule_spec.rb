@@ -112,6 +112,36 @@ RSpec.describe AutoUpdateRule, :type => :model do
       expect(issues).to include issue_14
     end
 
+    if Redmine::Plugin.installed?(:redmine_templates)
+      context "filtering by issue template" do
+        before do
+          issue_7.update_column(:issue_template_id, 42)
+          issue_14.update_column(:issue_template_id, nil)
+        end
+
+        it "returns only issues created from the given template when mode is 'specific'" do
+          rule.update(template_filter_mode: "specific", issue_template_id: 42)
+          issues = rule.issues
+          expect(issues).to include issue_7
+          expect(issues).to_not include issue_14
+        end
+
+        it "returns only issues without a template when mode is 'none'" do
+          rule.update(template_filter_mode: "none")
+          issues = rule.issues
+          expect(issues).to include issue_14
+          expect(issues).to_not include issue_7
+        end
+
+        it "does not filter on the template when mode is 'all'" do
+          rule.update(template_filter_mode: "all")
+          issues = rule.issues
+          expect(issues).to include issue_7
+          expect(issues).to include issue_14
+        end
+      end
+    end
+
   end
 
   context "apply rules" do
@@ -263,7 +293,9 @@ RSpec.describe AutoUpdateRule, :type => :model do
                                           :tracker_ids => rule_to_copy.tracker_ids,
                                           :update_issue_timestamp => rule_to_copy.update_issue_timestamp,
                                           :assignment => rule_to_copy.assignment,
-                                          :final_priority => rule_to_copy.final_priority)
+                                          :final_priority => rule_to_copy.final_priority,
+                                          :template_filter_mode => rule_to_copy.template_filter_mode,
+                                          :issue_template_id => rule_to_copy.issue_template_id)
       expect(new_rule.id).to_not eq rule_to_copy.id
       expect(new_rule.author_id).to_not eq rule_to_copy.author_id
       expect(new_rule.name).to_not eq rule_to_copy.name

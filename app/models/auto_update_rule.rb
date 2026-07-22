@@ -8,7 +8,8 @@ class AutoUpdateRule < ApplicationRecord
 
   safe_attributes "name", "initial_status_ids", "final_status_id", "time_limit", "note", "author_id", "project_ids",
                   "project_id", "enabled", "organization_ids", "tracker_ids", "update_issue_timestamp", "assignment",
-                  "final_priority", "include_weekends", "delete_issue", "delete_all_attachments", "has_attachments"
+                  "final_priority", "include_weekends", "delete_issue", "delete_all_attachments", "has_attachments",
+                  "template_filter_mode", "issue_template_id"
 
   validates_presence_of :author_id
 
@@ -16,6 +17,10 @@ class AutoUpdateRule < ApplicationRecord
   has_many :auto_update_rule_projects, :dependent => :destroy
   has_many :projects, through: :auto_update_rule_projects
   belongs_to :author, class_name: 'User', foreign_key: :author_id
+
+  if Redmine::Plugin.installed?(:redmine_templates)
+    belongs_to :issue_template, optional: true
+  end
 
   scope :active, -> { where(enabled: true) }
 
@@ -41,6 +46,15 @@ class AutoUpdateRule < ApplicationRecord
       issues_to_change = issues_to_change.where("issues.id IN (SELECT container_id FROM attachments WHERE container_type = 'Issue')")
     elsif has_attachments == "0"
       issues_to_change = issues_to_change.where("issues.id NOT IN (SELECT container_id FROM attachments WHERE container_type = 'Issue')")
+    end
+
+    if Redmine::Plugin.installed?(:redmine_templates)
+      case template_filter_mode
+      when 'specific'
+        issues_to_change = issues_to_change.where(issue_template_id: issue_template_id) if issue_template_id.present?
+      when 'none'
+        issues_to_change = issues_to_change.where(issue_template_id: nil)
+      end
     end
 
     issues_to_change

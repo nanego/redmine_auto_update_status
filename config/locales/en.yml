@@ -43,4 +43,8 @@ en:
   label_has_attachments_yes: "With attachments"
   label_has_attachments_no: "Without attachments"
   label_modifications: "Modifications to be made"
+  field_issue_template_filter: "Issue template"
+  label_template_filter_all: "All templates"
+  label_template_filter_specific: "Specific template"
+  label_template_filter_none: "Without a template"
 

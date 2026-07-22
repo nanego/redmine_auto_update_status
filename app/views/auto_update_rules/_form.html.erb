@@ -77,6 +77,40 @@
               </p>
             <% end %>
 
+            <% if Redmine::Plugin.installed?(:redmine_templates) %>
+              <p>
+                <%= f.label l(:field_issue_template_filter) %>
+                <label class="inline">
+                  <%= f.radio_button :template_filter_mode, "all", checked: @rule.template_filter_mode.blank? || @rule.template_filter_mode == "all" %>
+                  <%= l(:label_template_filter_all) %>
+                </label>
+                <label class="inline">
+                  <%= f.radio_button :template_filter_mode, "specific" %>
+                  <%= l(:label_template_filter_specific) %>
+                </label>
+                <label class="inline">
+                  <%= f.radio_button :template_filter_mode, "none" %>
+                  <%= l(:label_template_filter_none) %>
+                </label>
+              </p>
+              <p id="specific_template_select">
+                <%= f.select :issue_template_id,
+                             options_for_select(IssueTemplate.order(:template_title).map { |t| [t.title_with_tracker, t.id] }, @rule.issue_template_id),
+                             { label: l(:label_template_filter_specific), include_blank: true } %>
+              </p>
+
+              <script type="text/javascript">
+                  $(document).ready(function () {
+                      var toggleSpecificTemplate = function () {
+                          var mode = $('#auto_update_rule_form input[name="auto_update_rule[template_filter_mode]"]:checked').val();
+                          $('#specific_template_select').toggle(mode === 'specific');
+                      };
+                      $('#auto_update_rule_form input[name="auto_update_rule[template_filter_mode]"]').on('change', toggleSpecificTemplate);
+                      toggleSpecificTemplate();
+                  });
+              </script>
+            <% end %>
+
           </fieldset>
 
           <br>

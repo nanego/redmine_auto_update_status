@@ -45,3 +45,7 @@ fr:
   label_has_attachments_yes: "Avec pièces jointes"
   label_has_attachments_no: "Sans pièces jointes"
   label_modifications: "Modifications à apporter"
+  field_issue_template_filter: "Modèle de demande"
+  label_template_filter_all: "Tous les modèles"
+  label_template_filter_specific: "Modèle spécifique"
+  label_template_filter_none: "Demandes libres uniquement"
