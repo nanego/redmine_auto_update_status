@@ -17,7 +17,8 @@ Rails.application.config.after_initialize do
   Redmine::Plugin.find(:redmine_auto_update_status).menu :admin_menu, :auto_update_rules,
                                                          { :controller => 'auto_update_rules', :action => 'index' },
                                                          :caption => :label_auto_update_status,
-                                                         :html => { :class => 'icon' }
+                                                         :icon => 'workflows',
+                                                         :html => { :class => 'icon icon-workflows' }
 end
 
 # Support for Redmine 5

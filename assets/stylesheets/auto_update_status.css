@@ -1,21 +1,3 @@
-#admin-menu a.auto-update-rules {
-    background-image: url(../images/icon-workflow-rules.png);
-}
-
-/* Base positioning for the plugin's own raster icon (removed from Redmine 7.0 core);
-   scoped to elements without an SVG icon so it never affects sprite icons. */
-.icon:not(:has(svg)) {
-  background-position: 0% 50%;
-  background-repeat: no-repeat;
-  padding-left: 20px;
-}
-
-.icon-auto-update-status {
-    background-image: url(../images/icon-workflow-rules.png);
-    padding-left: 25px;
-    background-repeat: no-repeat;
-}
-
 #auto_update_rule .value {
     font-weight: bold;
 }

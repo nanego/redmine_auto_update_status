@@ -6,7 +6,7 @@
               :method => :get) %>
 </div>
 
-<h2><span class="icon icon-auto-update-status"><%= h "#{l(:label_auto_update_rules)}" %></span></h2>
+<h2 class="icon"><%= sprite_icon('workflows', l(:label_auto_update_rules)) %></h2>
 
 <% if @notice %>
   <div class="flash notice"><%= @notice %></div>
