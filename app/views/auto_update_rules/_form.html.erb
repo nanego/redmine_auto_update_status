@@ -36,7 +36,7 @@
                            { :multiple => true, :size => 10, style: "display:none;" } %>
                 <span id="my_projects">
                   <% @rule.projects.each do |project| %>
-                    <%= content_tag("span", project.name.gsub(/ /, "&nbsp;").html_safe, class: "list_projects_names") %>
+                    <%= content_tag("span", h(project.name).gsub(/ /, "&nbsp;").html_safe, class: "list_projects_names") %>
                   <% end %>
                 </span>
               </span>
